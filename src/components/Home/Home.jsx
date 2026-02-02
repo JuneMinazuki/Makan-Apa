@@ -1,8 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet'; 
+import { MapContainer, TileLayer, CircleMarker, Marker, Popup, useMap } from 'react-leaflet'; 
 import 'leaflet/dist/leaflet.css';
 import './Home.css';
+
+// Location data
+import { LocationType, mapLocations } from './data.js';
+
+// Icon style for each type
+const iconStyle = {
+  [LocationType.Kopitiam]: { color: '#238653', icon: 'fa-bowl-rice' },
+  [LocationType.Cafe]: { color: '#2865bb', icon: 'fa-mug-hot' },
+  [LocationType.Restaurant]: { color: '#64380c', icon: 'fa-utensils' },
+  [LocationType.FastFood]: { color: '#bc210f', icon: 'fa-burger' },
+  default: { color: '#666666', icon: 'fa-house' }
+};
+
+const getIconStyle = (type) => {
+  return iconStyle[type] || iconStyle.default;
+};
+
+const createPin = (type) => {
+  const { color, icon } = getIconStyle(type);
+
+  return L.divIcon({
+    className: 'custom-fa-icon',
+    html: `<div style="background-color: ${color};" class="marker-circle">
+             <i class="fa-solid ${icon}"></i>
+           </div>`,
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, -15]
+  });
+};
 
 // Set marker icon in React-Leaflet
 import L from 'leaflet';
@@ -17,9 +47,31 @@ let DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
+// Format time
+const getTodayScheduleString = (schedule) => {
+  // Get current day
+  const day = new Date().getDay();
+  const today = schedule[day];
+
+  if (!today) return "Closed Today";
+
+  // Turn int to time
+  const formatTime = (timeInt) => {
+    const timeStr = timeInt.toString().padStart(4, '0');
+    let hours = parseInt(timeStr.slice(0, 2));
+    const mins = timeStr.slice(2);
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    
+    hours = hours % 12 || 12; // Converts 0 to 12 and 13-23 to 1-11
+    return `${hours}:${mins} ${ampm}`;
+  };
+
+  return `${formatTime(today.open)} - ${formatTime(today.close)}`;
+};
+
 function Home() {
-    // Coordinates for the Cyberjaya
-  const position = [2.9278, 101.6419];
+  // Coordinates for the Puchong
+  const position = [3.0327, 101.6188];
 
   // Get user location
   const [userLocation, setUserLocation] = useState(null);
@@ -97,6 +149,46 @@ function Home() {
               <Popup>You are here</Popup>
             </CircleMarker>
           )}
+
+          {/* Loop through all pin */}
+          {mapLocations.map((location) => {
+            // Logic to determine if currently open
+            const now = new Date();
+            const currentTime = now.getHours() * 100 + now.getMinutes();
+            const todayData = location.schedule[now.getDay()];
+            const isOpen = todayData && currentTime >= todayData.open && currentTime <= todayData.close;
+
+            return (
+              <Marker 
+                key={location.id}
+                position={[location.lat, location.lng]}
+                icon={createPin(location.type)} 
+              >
+                <Popup>
+                  <div style={{ textAlign: 'center', minWidth: '160px' }}>
+                    <h3 style={{ margin: '0 0 4px 0' }}>{location.name}</h3>
+                    <p style={{ margin: 0, color: 'gray', fontSize: '0.9em' }}>{location.type}</p>
+                    
+                    <hr style={{ margin: '8px 0', border: '0', borderTop: '1px solid #eee' }}/>
+                    
+                    <div style={{ marginBottom: '4px' }}>
+                      <span style={{ 
+                        color: isOpen ? '#28a745' : '#dc3545', 
+                        fontWeight: 'bold',
+                        fontSize: '0.85em'
+                      }}>
+                        {isOpen ? '● Open Now' : '○ Closed'}
+                      </span>
+                    </div>
+
+                    <small style={{ display: 'block', color: '#555' }}>
+                      {getTodayScheduleString(location.schedule)}
+                    </small>
+                  </div>
+                </Popup>
+              </Marker>
+            );
+          })}
         </MapContainer>
       </div>
     </div>
