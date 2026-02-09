@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { MapContainer, TileLayer, CircleMarker, Marker, Popup, useMap } from 'react-leaflet'; 
 import 'leaflet/dist/leaflet.css';
-import './Home.css';
 
 // Data and Utils
 import { getNearbyLocations } from '../utils/geoUtils.js';
@@ -80,7 +79,12 @@ function Home() {
 
   // Get nearby location pin
   const nearbyPins = useMemo(() => {
-    return getNearbyLocations(mapLocations, userLocation, 20);
+    const locations = getNearbyLocations(mapLocations, userLocation, 20);
+
+    return locations.map(loc => ({
+      ...loc,
+      leafletIcon: createPin(loc.type) 
+    }));
   }, [userLocation]);
 
   const handleGetUserLocation = () => {
@@ -169,7 +173,7 @@ function Home() {
               <Marker 
                 key={location.id}
                 position={[location.lat, location.lng]}
-                icon={createPin(location.type)} 
+                icon={location.leafletIcon}
               >
                 <Popup>
                   <div style={{ textAlign: 'center', minWidth: '160px' }}>
