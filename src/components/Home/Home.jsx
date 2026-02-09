@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { MapContainer, TileLayer, CircleMarker, Marker, Popup, useMap } from 'react-leaflet'; 
 import 'leaflet/dist/leaflet.css';
 import './Home.css';
 
-// Location data
+// Data and Utils
+import { getNearbyLocations } from '../utils/geoUtils.js';
 import { LocationType, mapLocations } from './data.js';
+import './Home.css';
 
 // Icon style for each type
 const iconStyle = {
@@ -76,6 +78,11 @@ function Home() {
   // Get user location
   const [userLocation, setUserLocation] = useState(null);
 
+  // Get nearby location pin
+  const nearbyPins = useMemo(() => {
+    return getNearbyLocations(mapLocations, userLocation, 20);
+  }, [userLocation]);
+
   const handleGetUserLocation = () => {
     if (!navigator.geolocation) {
       alert("Geolocation is not supported by your browser");
@@ -104,7 +111,7 @@ function Home() {
 
     useEffect(() => {
       if (userLocation) {
-        map.flyTo([userLocation.lat, userLocation.lng], 14.5, {
+        map.flyTo([userLocation.lat, userLocation.lng], 16.5, {
           duration: 1
         });
       }
@@ -151,7 +158,7 @@ function Home() {
           )}
 
           {/* Loop through all pin */}
-          {mapLocations.map((location) => {
+          {nearbyPins.map((location) => {
             // Logic to determine if currently open
             const now = new Date();
             const currentTime = now.getHours() * 100 + now.getMinutes();
