@@ -58,13 +58,18 @@ const getTodayScheduleString = (schedule) => {
 
   // Turn int to time
   const formatTime = (timeInt) => {
+    if (timeInt === 0 || timeInt === 2400) return "12:00 AM"; // Handle 0000 and 2400 as midnight
+      
     const timeStr = timeInt.toString().padStart(4, '0');
     let hours = parseInt(timeStr.slice(0, 2));
     const mins = timeStr.slice(2);
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    
-    hours = hours % 12 || 12; // Converts 0 to 12 and 13-23 to 1-11
-    return `${hours}:${mins} ${ampm}`;
+    const ampm = hours >= 12 && hours < 24 ? 'PM' : 'AM';
+      
+    // Standard 12-hour conversion
+    let displayHours = hours % 12;
+    if (displayHours === 0) displayHours = 12; 
+
+    return `${displayHours}:${mins} ${ampm}`;
   };
 
   return `${formatTime(today.open)} - ${formatTime(today.close)}`;
@@ -163,11 +168,21 @@ function Home() {
 
           {/* Loop through all pin */}
           {nearbyPins.map((location) => {
-            // Logic to determine if currently open
+            // Determine if currently open
             const now = new Date();
+            const currentDay = now.getDay();
             const currentTime = now.getHours() * 100 + now.getMinutes();
-            const todayData = location.schedule[now.getDay()];
-            const isOpen = todayData && currentTime >= todayData.open && currentTime <= todayData.close;
+            const todayData = location.schedule[currentDay];
+            
+            let isOpen = false;
+            if (todayData) { // Open and close on same day
+              if (todayData.open < todayData.close) {
+                isOpen = currentTime >= todayData.open && currentTime <= todayData.close;
+              } 
+              else { // Close on the next day overnight
+                isOpen = currentTime >= todayData.open || currentTime <= todayData.close;
+              }
+            }
 
             return (
               <Marker 
