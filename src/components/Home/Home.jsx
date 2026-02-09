@@ -4,25 +4,24 @@ import { MapContainer, TileLayer, CircleMarker, Marker, Popup, useMap } from 're
 import 'leaflet/dist/leaflet.css';
 
 // Data and Utils
-import { getNearbyLocations } from '../utils/geoUtils.js';
+import { getNearbyLocations } from '../Utils/geoUtils.js';
 import { LocationType, mapLocations } from './data.js';
 import './Home.css';
 
 // Icon style for each type
-const iconStyle = {
-  [LocationType.Kopitiam]: { color: '#238653', icon: 'fa-bowl-rice' },
-  [LocationType.Cafe]: { color: '#2865bb', icon: 'fa-mug-hot' },
-  [LocationType.Restaurant]: { color: '#64380c', icon: 'fa-utensils' },
-  [LocationType.FastFood]: { color: '#bc210f', icon: 'fa-burger' },
-  default: { color: '#666666', icon: 'fa-house' }
+const iconStyle = Object.freeze({
+  0: { color: '#238653', icon: 'fa-bowl-rice' },  // Kopitiam
+  1: { color: '#2865bb', icon: 'fa-mug-hot' },    // Cafe
+  2: { color: '#64380c', icon: 'fa-utensils' },   // Restaurant
+  3: { color: '#bc210f', icon: 'fa-burger' },     // Fast Food
+});
+
+const getIconStyle = (typeId) => {
+  return iconStyle[typeId] || { color: '#666666', icon: 'fa-house' };
 };
 
-const getIconStyle = (type) => {
-  return iconStyle[type] || iconStyle.default;
-};
-
-const createPin = (type) => {
-  const { color, icon } = getIconStyle(type);
+const createPin = (typeId) => {
+  const { color, icon } = getIconStyle(typeId);
 
   return L.divIcon({
     className: 'custom-fa-icon',
@@ -49,12 +48,12 @@ let DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 // Format time
-const getTodayScheduleString = (schedule) => {
+const getTodaySchedule = (schedule) => {
   // Get current day
   const day = new Date().getDay();
   const today = schedule[day];
 
-  if (!today) return "Closed Today";
+  if (!today || today.length === 0) return "Closed Today";
 
   // Turn int to time
   const formatTime = (timeInt) => {
@@ -72,7 +71,7 @@ const getTodayScheduleString = (schedule) => {
     return `${displayHours}:${mins} ${ampm}`;
   };
 
-  return `${formatTime(today.open)} - ${formatTime(today.close)}`;
+  return `${formatTime(today[0])} - ${formatTime(today[1])}`;
 };
 
 function Home() {
@@ -175,12 +174,14 @@ function Home() {
             const todayData = location.schedule[currentDay];
             
             let isOpen = false;
-            if (todayData) { // Open and close on same day
-              if (todayData.open < todayData.close) {
-                isOpen = currentTime >= todayData.open && currentTime <= todayData.close;
+            if (todayData && todayData.length === 2) {
+              const [openTime, closeTime] = todayData;
+
+              if (openTime < closeTime) { // Open and close on same day
+                isOpen = currentTime >= openTime && currentTime <= closeTime;
               } 
               else { // Close on the next day overnight
-                isOpen = currentTime >= todayData.open || currentTime <= todayData.close;
+                isOpen = currentTime >= openTime || currentTime <= closeTime;
               }
             }
 
@@ -193,7 +194,7 @@ function Home() {
                 <Popup>
                   <div style={{ textAlign: 'center', minWidth: '160px' }}>
                     <h3 style={{ margin: '0 0 4px 0' }}>{location.name}</h3>
-                    <p style={{ margin: 0, color: 'gray', fontSize: '0.9em' }}>{location.type}</p>
+                    <p style={{ margin: 0, color: 'gray', fontSize: '0.9em' }}>{LocationType[location.type]?.label || "Unknown"}</p>
                     
                     <hr style={{ margin: '8px 0', border: '0', borderTop: '1px solid #eee' }}/>
                     
@@ -208,7 +209,7 @@ function Home() {
                     </div>
 
                     <small style={{ display: 'block', color: '#555' }}>
-                      {getTodayScheduleString(location.schedule)}
+                      {getTodaySchedule(location.schedule)}
                     </small>
                   </div>
                 </Popup>
