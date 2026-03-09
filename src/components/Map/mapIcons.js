@@ -6,6 +6,7 @@ export const iconStyle = Object.freeze({
   1: { color: '#2865bb', icon: 'fa-mug-hot' },    // Cafe
   2: { color: '#64380c', icon: 'fa-utensils' },   // Restaurant
   3: { color: '#bc210f', icon: 'fa-burger' },     // Fast Food
+  4: { color: '#3b1c79', icon: 'fa-store' },      // Convenience Store
 });
 
 const createPin = (typeId) => {
