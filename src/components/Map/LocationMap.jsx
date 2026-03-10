@@ -1,5 +1,4 @@
 import { MapContainer, TileLayer, CircleMarker, Marker, Popup } from 'react-leaflet';
-import { LocationType } from '../../data/locations.js';
 import './LocationMap.css';
 
 // Hooks and Utils
@@ -36,16 +35,16 @@ function LocationMap({ userLocation, nearbyPins, defaultPosition }) {
 
       {/* Nearby Location Markers */}
       {nearbyPins.map((location) => {
-        const icon = memoizedIcons[location.type] || memoizedIcons[0];
+        const iconData = memoizedIcons[location.type] || memoizedIcons[2];
         const isOpen = getIsLocationOpen(location.schedule);
 
         return (
-          <Marker key={location.id} position={[location.lat, location.lng]} icon={icon}>
+          <Marker key={location.id} position={[location.lat, location.lng]} icon={iconData.icon}>
             <Popup>
               <div style={{ textAlign: 'center', minWidth: '160px' }}>
                 <h3 style={{ margin: '0 0 4px 0' }}>{location.name}</h3>
                 <p style={{ margin: 0, color: 'gray', fontSize: '0.9em' }}>
-                  {LocationType[location.type] || "Unknown"}
+                  {iconData.label}
                 </p>
                 <hr style={{ margin: '8px 0', border: '0', borderTop: '1px solid #eee' }}/>
                 <div style={{ marginBottom: '4px' }}>

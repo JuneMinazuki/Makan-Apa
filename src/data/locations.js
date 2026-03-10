@@ -1,12 +1,4 @@
-export const LocationType = Object.freeze({
-  0: "Kopitiam",
-  1: "Cafe",
-  2: "Restaurant",
-  3: "Fast Food",
-  4: "Convenience Store"
-});
-
-export const mapLocations = [
+  export const mapLocations = [
   {
     id: 1,
     name: "古早味 The Unique Taste",

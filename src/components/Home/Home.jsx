@@ -10,12 +10,12 @@ import { getNearbyLocations } from '../Utils/geoUtils.js';
 // Map Components
 import LocationMap from '../Map/LocationMap.jsx';
 import FilterSidebar from '../Sidebar/FilterSidebar.jsx';
-import { iconStyle } from '../Map/mapIcons.js';
+import { iconInfomation } from '../Map/mapIcons.js';
 
 function Home() {
   const position = [3.0327, 101.6188]; // Coordinates for the Puchong
   const { userLocation, error, loading } = useUserLocation();
-  const [activeTypes, setActiveTypes] = useState(Object.keys(iconStyle));
+  const [activeTypes, setActiveTypes] = useState(Object.keys(iconInfomation));
 
   // Get nearby and filter location pin
   const nearbyPins = useMemo(() => {
