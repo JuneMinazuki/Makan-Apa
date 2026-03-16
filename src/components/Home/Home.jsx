@@ -30,7 +30,11 @@ function Home() {
 
   return (
     <div className="home-container">
-      <Navbar loading={loading} error={error} />
+      <Navbar
+        loading={loading}
+        error={error}
+        onSearch={(term) => console.log("Searching for:", term)}
+      />
 
       <div className="main-content">
         <div className="map-area">

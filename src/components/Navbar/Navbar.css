@@ -17,3 +17,28 @@
   color: #fafafa;
   text-decoration: none;
 }
+
+/* --- Search Bar --- */
+.search-container {
+  display: flex;
+  width: 100%;
+  max-width: 400px;
+  margin-left: auto;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px 0 0 4px;
+  outline: none;
+}
+
+.search-button {
+  padding: 8px 12px;
+  background: #ff4757;
+  border: none;
+  color: white;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+}
