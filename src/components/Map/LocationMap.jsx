@@ -13,7 +13,6 @@ function LocationMap({ userLocation, nearbyPins, defaultPosition }) {
       zoom={16.5} 
       scrollWheelZoom={true} 
       className="leaflet-container"
-      style={{ height: '100%', width: '100%' }}
     >
       <TileLayer
         attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>'

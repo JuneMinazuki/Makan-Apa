@@ -7,6 +7,9 @@ import './Home.css';
 import { useUserLocation } from '../Hooks/useUserLocation';
 import { getNearbyLocations } from '../Utils/geoUtils.js';
 
+// Navigation Bar
+import Navbar from '../Navbar/Navbar.jsx';
+
 // Map Components
 import LocationMap from '../Map/LocationMap.jsx';
 import FilterSidebar from '../Sidebar/FilterSidebar.jsx';
@@ -27,14 +30,8 @@ function Home() {
 
   return (
     <div className="home-container">
-      {/* Top Menu Bar */}
-      <nav className="navbar">
-        <div className="nav-logo">Makan Apa?</div>
-        {loading && <div className="loading-tag">Locating your position...</div>}
-        {error && <div className="error-tag" title={error}>Couldn't retrieve your position</div>}
-      </nav>
+      <Navbar loading={loading} error={error} />
 
-      {/* Main Content Area */}
       <div className="main-content">
         <div className="map-area">
           <LocationMap 
