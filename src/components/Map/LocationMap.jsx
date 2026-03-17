@@ -3,10 +3,10 @@ import './LocationMap.css';
 
 // Hooks and Utils
 import { getIsLocationOpen, getTodaySchedule } from '../Utils/dateUtils.js';
-import FlyToUserLocation from './FlyToUserLocation.js';
+import FlyToLocation from './FlyToLocation.js';
 import { memoizedIcons } from '../Map/mapIcons.js';
 
-function LocationMap({ userLocation, nearbyPins, defaultPosition }) {
+function LocationMap({ userLocation, nearbyPins, defaultPosition, selectedLocation }) {
   return (
     <MapContainer 
       center={defaultPosition} 
@@ -19,7 +19,8 @@ function LocationMap({ userLocation, nearbyPins, defaultPosition }) {
         url="https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png"
       />
 
-      <FlyToUserLocation userLocation={userLocation} />
+      <FlyToLocation targetLocation={userLocation} /> {/* Fly to user location */}
+      <FlyToLocation targetLocation={selectedLocation} /> {/* Fly to selected store */}
 
       {/* User Current Location Marker */}
       {userLocation && (

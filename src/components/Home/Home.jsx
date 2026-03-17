@@ -28,12 +28,19 @@ function Home() {
     return pins.filter(pin => activeTypes.includes(String(pin.type)));
   }, [userLocation, activeTypes]);
 
+  // Fly to selected location after searching
+  const [selectedLocation, setSelectedLocation] = useState(null);
+
+  const handleSearch = (location) => {
+    setSelectedLocation(location);
+  };
+
   return (
     <div className="home-container">
       <Navbar
         loading={loading}
         error={error}
-        onSearch={(term) => console.log("Searching for:", term)}
+        onSearch={handleSearch}
       />
 
       <div className="main-content">
@@ -42,6 +49,7 @@ function Home() {
             userLocation={userLocation} 
             nearbyPins={nearbyPins} 
             defaultPosition={position} 
+            selectedLocation={selectedLocation}
           />
         </div>
 
