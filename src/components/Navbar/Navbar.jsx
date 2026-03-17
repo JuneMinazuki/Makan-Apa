@@ -26,8 +26,15 @@ function Navbar({ loading, error, onSearch }) {
       const results = mapLocations.filter(loc =>
         loc.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
+      
       setFilteredResults(results.slice(0, 5));
-      setShowDropdown(true);
+      
+      const isExactMatch = results.some(loc => loc.name === searchTerm);
+      if (!isExactMatch) {
+        setShowDropdown(true);
+      } else {
+        setShowDropdown(false);
+      }
     } else {
       setFilteredResults([]);
       setShowDropdown(false);
@@ -37,6 +44,7 @@ function Navbar({ loading, error, onSearch }) {
   const handleSelect = (location) => {
     setSearchTerm(location.name);
     setShowDropdown(false);
+    setFilteredResults([]);
     if (onSearch) {
       onSearch(location);
     }
