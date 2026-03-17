@@ -20,10 +20,17 @@
 }
 
 /* --- Search Bar --- */
+.search-wrapper {
+  margin-left: auto;
+  margin-right: 20px;
+  width: 100%;
+  max-width: 450px;
+  position: relative;
+}
+
 .search-container {
   display: flex;
   align-items: center;
-  margin-left: auto;
   width: 100%;
   max-width: 450px;
   background: rgba(255, 255, 255, 0.15);
