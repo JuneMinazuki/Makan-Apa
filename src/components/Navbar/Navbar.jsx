@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { mapLocations } from '../../data/locations.js';
+import { iconInfomation } from '../Map/mapIcons.js';
 import './Navbar.css';
 
 function Navbar({ loading, error, onSearch }) {
@@ -57,15 +58,7 @@ function Navbar({ loading, error, onSearch }) {
             className="search-input"
           />
           <button type="submit" className="search-button">
-            <svg 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="3" 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              className="search-icon"
-            >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="search-icon">
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
@@ -74,12 +67,24 @@ function Navbar({ loading, error, onSearch }) {
 
         {showDropdown && filteredResults.length > 0 && (
           <ul className="search-dropdown">
-            {filteredResults.map((loc) => (
-              <li key={loc.id} onClick={() => handleSelect(loc)}>
-                <div className="location-name">{loc.name}</div>
-                <div className="location-meta">Type {loc.type}</div>
-              </li>
-            ))}
+            {filteredResults.map((loc) => {
+              const typeInfo = iconInfomation[loc.type] || { label: 'Unknown', color: '#666', icon: 'fa-location-dot' };
+              
+              return (
+                <li key={loc.id} onClick={() => handleSelect(loc)}>
+                  <div className="type-icon-wrapper">
+                    <i 
+                      className={`fa-solid ${typeInfo.icon}`} 
+                      style={{ color: typeInfo.color }}
+                    ></i>
+                  </div>
+
+                  <div className="location-content">
+                    <span className="location-name">{loc.name}</span>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>
