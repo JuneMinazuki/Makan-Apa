@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Marker, Popup } from 'react-leaflet';
 import './LocationMap.css';
 
@@ -7,6 +8,14 @@ import FlyToLocation from './FlyToLocation.js';
 import { memoizedIcons } from '../Map/mapIcons.js';
 
 function LocationMap({ userLocation, nearbyPins, defaultPosition, selectedLocation }) {
+  const markerRefs = useRef({});
+
+  useEffect(() => {
+    if (selectedLocation && markerRefs.current[selectedLocation.id]) {
+      markerRefs.current[selectedLocation.id].openPopup();
+    }
+  }, [selectedLocation]);
+
   return (
     <MapContainer 
       center={defaultPosition} 
@@ -39,7 +48,12 @@ function LocationMap({ userLocation, nearbyPins, defaultPosition, selectedLocati
         const isOpen = getIsLocationOpen(location.schedule);
 
         return (
-          <Marker key={location.id} position={[location.lat, location.lng]} icon={iconData.icon}>
+          <Marker
+            key={location.id}
+            position={[location.lat, location.lng]}
+            icon={iconData.icon}
+            ref={(ref) => { if (ref) markerRefs.current[location.id] = ref; }}
+          >
             <Popup>
               <div style={{ textAlign: 'center', minWidth: '160px' }}>
                 <h3 style={{ margin: '0 0 4px 0' }}>{location.name}</h3>
