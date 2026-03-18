@@ -2,47 +2,47 @@
  * Determine if the location is open right now
  */
 export const getIsLocationOpen = (schedule) => {
+  if (!schedule) return false;
+  
   const now = new Date();
   const currentDay = now.getDay();
   const currentTime = now.getHours() * 100 + now.getMinutes();
   const todayData = schedule[currentDay];
 
-  if (!todayData || todayData.length !== 2) return false;
+  if (!todayData || todayData.length === 0) return false;
 
   const [openTime, closeTime] = todayData;
-  return openTime < closeTime
-    ? currentTime >= openTime && currentTime <= closeTime
-    : currentTime >= openTime || currentTime <= closeTime;
+  if (openTime < closeTime) {
+    return currentTime >= openTime && currentTime < closeTime; // Normal hours
+  } else {
+    return currentTime >= openTime || currentTime < closeTime; // Overnight hours
+  }
 };
 
 /**
  * Convert time from integer to string.
  */
 export const formatIntToTime = (timeInt) => {
-  if (timeInt === undefined || timeInt === null) return "";
-  if (timeInt === 0 || timeInt === 2400) return "12:00 AM";
-
-  const timeStr = timeInt.toString().padStart(4, '0');
-  const hours = parseInt(timeStr.slice(0, 2));
-  const mins = timeStr.slice(2);
+  if (timeInt === undefined || timeInt === null) return "Closed";
   
-  const ampm = hours >= 12 && hours < 24 ? 'PM' : 'AM';
-  let displayHours = hours % 12 || 12; // Simplified 0 -> 12 logic
+  const hours = Math.floor(timeInt / 100) % 24;
+  const mins = timeInt % 100;
+  
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const hours12 = hours % 12 || 12;
+  const displayMins = mins < 10 ? `0${mins}` : mins;
 
-  return `${displayHours}:${mins} ${ampm}`;
+  return `${hours12}:${displayMins} ${ampm}`;
 };
 
 /**
  * Gets the formatted operating hours for the current day.
  */
 export const getTodaySchedule = (schedule) => {
-  if (!schedule) return "No schedule available";
-  
   const day = new Date().getDay();
-  const today = schedule[day];
+  const today = schedule?.[day];
 
   if (!today || today.length === 0) return "Closed Today";
 
-  // Reusing the format function above
   return `${formatIntToTime(today[0])} - ${formatIntToTime(today[1])}`;
 };
