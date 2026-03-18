@@ -41,6 +41,8 @@ function Home() {
         loading={loading}
         error={error}
         onSearch={handleSearch}
+        activeTypes={activeTypes}
+        setActiveTypes={setActiveTypes}
       />
 
       <div className="main-content">

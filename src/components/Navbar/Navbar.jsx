@@ -3,7 +3,7 @@ import { mapLocations } from '../../data/locations.js';
 import { iconInfomation } from '../Map/mapIcons.js';
 import './Navbar.css';
 
-function Navbar({ loading, error, onSearch }) {
+function Navbar({ loading, error, onSearch, activeTypes, setActiveTypes }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredResults, setFilteredResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -45,6 +45,12 @@ function Navbar({ loading, error, onSearch }) {
     setSearchTerm(location.name);
     setShowDropdown(false);
     setFilteredResults([]);
+
+    const typeString = String(location.type);
+    if (setActiveTypes && !activeTypes.includes(typeString)) {
+      setActiveTypes(prev => [...prev, typeString]);
+    }
+
     if (onSearch) {
       onSearch(location);
     }
