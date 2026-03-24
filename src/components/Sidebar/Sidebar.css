@@ -1,6 +1,6 @@
 /* --- Filter Sidebar --- */
 .filter-sidebar {
-  width: 320px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -14,6 +14,8 @@
 }
 
 .filter-group button {
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   padding: 12px 15px;
@@ -35,4 +37,36 @@
   background: #3e6787;
   color: white !important;
   border-color: #3e6787;
+}
+
+/* --- Randomizer Sidebar --- */
+.randomizer-container {
+  width: 100%;
+  padding: 15px 0;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.random-button {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  background-color: #26a35a;
+  color: white;
+  border: 1px solid transparent;  
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.random-button:hover {
+  transform: translateY(-2px);
+  background-color: #26af5f;
+}
+
+.random-hint {
+  font-size: 0.8rem;
+  color: #777;
+  margin-top: 8px;
 }

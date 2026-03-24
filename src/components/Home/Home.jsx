@@ -13,6 +13,7 @@ import Navbar from '../Navbar/Navbar.jsx';
 // Map Components
 import LocationMap from '../Map/LocationMap.jsx';
 import FilterSidebar from '../Sidebar/FilterSidebar.jsx';
+import RandomizerSidebar from '../Sidebar/RandomizerSidebar.jsx';
 import { iconInfomation } from '../Map/mapIcons.js';
 
 function Home() {
@@ -55,10 +56,17 @@ function Home() {
           />
         </div>
 
-        <FilterSidebar 
-          activeTypes={activeTypes} 
-          setActiveTypes={setActiveTypes} 
-        />
+        <div className="sidebar-wrapper">
+          <FilterSidebar 
+            activeTypes={activeTypes} 
+            setActiveTypes={setActiveTypes} 
+          />
+
+          <RandomizerSidebar 
+            nearbyPins={nearbyPins} 
+            onSelect={setSelectedLocation} 
+          />
+        </div>
       </div>
     </div>
   );

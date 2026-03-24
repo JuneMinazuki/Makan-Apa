@@ -1,5 +1,5 @@
 import { iconInfomation } from '../Map/mapIcons.js';
-import './FilterSidebar.css';
+import './Sidebar.css';
 
 function FilterSidebar({ activeTypes, setActiveTypes }) {
   const allKeys = Object.keys(iconInfomation);

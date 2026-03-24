@@ -24,6 +24,24 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
+/* --- Sidebar --- */
+.sidebar-wrapper {
+  width: 350px; 
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background: transparent;
+  padding: 0 20px; 
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.sidebar-wrapper > *:not(:last-child) {
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
 /* --- Loading and Error Tag --- */
 .loading-tag, .error-tag {
   font-size: 0.8rem;
