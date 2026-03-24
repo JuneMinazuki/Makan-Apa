@@ -1,14 +1,17 @@
+import { getIsLocationOpen } from '../Utils/dateUtils.js';
 import './Sidebar.css';
 
 function RandomizerSidebar({ nearbyPins, onSelect }) {
   
   const handleRandomize = () => {
-    if (nearbyPins && nearbyPins.length > 0) {
-      const randomIndex = Math.floor(Math.random() * nearbyPins.length);
-      const randomPin = nearbyPins[randomIndex];
+    const openPins = nearbyPins?.filter(pin => getIsLocationOpen(pin.schedule)) || [];
+
+    if (openPins.length > 0) {
+      const randomIndex = Math.floor(Math.random() * openPins.length);
+      const randomPin = openPins[randomIndex];
       onSelect(randomPin);
     } else {
-      alert("No locations found! Try selecting more categories first.");
+      alert("No locations are currently open! Try again later or check your filters.");
     }
   };
 
@@ -18,7 +21,7 @@ function RandomizerSidebar({ nearbyPins, onSelect }) {
         <i className="fa-solid fa-shuffle" style={{ marginRight: '8px' }}></i>
         Surprise Me!
       </button>
-      <p className="random-hint">Can't decide? Let us pick for you.</p>
+      <p className="random-hint">Can't decide? Let us pick an open spot for you.</p>
     </div>
   );
 }
