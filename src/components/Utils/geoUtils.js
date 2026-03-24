@@ -15,9 +15,9 @@ export const calculateDistance = (lat1, lon1, lat2, lon2) => {
 };
 
 /**
- * Returns the top N closest locations
+ * Returns locations within a specific radius, sorted by proximity
  */
-export const getNearbyLocations = (locations, userCoords, limit = 20) => {
+export const getNearbyLocations = (locations, userCoords, limit = 20, maxDistance = 10) => {
   if (!userCoords) return locations.slice(0, limit);
 
   return locations
@@ -25,6 +25,7 @@ export const getNearbyLocations = (locations, userCoords, limit = 20) => {
       ...loc,
       distance: calculateDistance(userCoords.lat, userCoords.lng, loc.lat, loc.lng)
     }))
+    .filter(loc => loc.distance <= maxDistance)
     .sort((a, b) => a.distance - b.distance)
     .slice(0, limit);
 };

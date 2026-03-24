@@ -24,7 +24,7 @@ function Home() {
   // Get nearby and filter location pin
   const nearbyPins = useMemo(() => {
     if (!userLocation) return [];
-    const pins = getNearbyLocations(mapLocations, userLocation, 20);
+    const pins = getNearbyLocations(mapLocations, userLocation, 20, 10);
 
     return pins.filter(pin => activeTypes.includes(String(pin.type)));
   }, [userLocation, activeTypes]);
