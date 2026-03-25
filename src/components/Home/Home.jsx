@@ -20,6 +20,7 @@ function Home() {
   const position = [3.0327, 101.6188]; // Coordinates for the Puchong
   const { userLocation, error, loading } = useUserLocation();
   const [activeTypes, setActiveTypes] = useState(Object.keys(iconInfomation));
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Get nearby and filter location pin
   const nearbyPins = useMemo(() => {
@@ -32,9 +33,9 @@ function Home() {
   // Fly to selected location after searching
   const [selectedLocation, setSelectedLocation] = useState(null);
 
-  const handleSearch = (location) => {
-    setSelectedLocation(location);
-  };
+  const handleSearch = (location) => setSelectedLocation(location);
+
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
     <div className="home-container">
@@ -46,6 +47,15 @@ function Home() {
         setActiveTypes={setActiveTypes}
       />
 
+      {/* Mobile Sidebar Toggle */}
+      <button 
+        className={`sidebar-toggle ${isSidebarOpen ? 'open' : ''}`} 
+        onClick={toggleSidebar}
+        aria-label="Toggle Sidebar"
+      >
+        {isSidebarOpen ? '✕' : '☰ Filters'}
+      </button>
+
       <div className="main-content">
         <div className="map-area">
           <LocationMap 
@@ -56,7 +66,7 @@ function Home() {
           />
         </div>
 
-        <div className="sidebar-wrapper">
+        <div className={`sidebar-wrapper ${isSidebarOpen ? 'active' : ''}`}>
           <FilterSidebar 
             activeTypes={activeTypes} 
             setActiveTypes={setActiveTypes} 
@@ -64,10 +74,15 @@ function Home() {
 
           <RandomizerSidebar 
             nearbyPins={nearbyPins} 
-            onSelect={setSelectedLocation} 
+            onSelect={(loc) => {
+              setSelectedLocation(loc);
+              setIsSidebarOpen(false);
+            }} 
           />
         </div>
       </div>
+      
+      {isSidebarOpen && <div className="sidebar-overlay" onClick={toggleSidebar}></div>}
     </div>
   );
 }
