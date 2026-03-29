@@ -4,7 +4,9 @@ import './Navbar.css';
 function Navbar({ loading, error, onSearch, activeTypes, setActiveTypes }) {
   return (
     <nav className="navbar">
-      <div className="nav-logo">Makan Apa?</div>
+      <div className="nav-logo">
+        <i className="fas fa-utensils"></i> Makan Apa?
+      </div>
 
       <SearchBar 
         onSearch={onSearch} 
