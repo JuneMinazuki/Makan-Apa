@@ -2,12 +2,14 @@ import L from 'leaflet';
 
 // Icon style for each type
 export const iconInfomation = Object.freeze({
-  0: { color: '#238653', icon: 'fa-bowl-rice',   label: 'Kopitiam' },
-  1: { color: '#2865bb', icon: 'fa-mug-hot',     label: 'Cafe' },
-  2: { color: '#64380c', icon: 'fa-utensils',    label: 'Restaurant' },
-  3: { color: '#bc210f', icon: 'fa-burger',      label: 'Fast Food' },
-  4: { color: '#e67e22', icon: 'fa-stroopwafel', label: 'Mamak' },
-  5: { color: '#3b1c79', icon: 'fa-store',       label: 'Convenience Store' },
+  0: { color: '#238653', icon: 'fa-bowl-rice',      label: 'Kopitiam' },
+  1: { color: '#e67e22', icon: 'fa-stroopwafel',    label: 'Mamak' },
+  2: { color: '#64380c', icon: 'fa-utensils',       label: 'Restaurant' },
+  3: { color: '#e84393', icon: 'fa-fish',           label: 'Japanese / Korean' },
+  4: { color: '#43a486', icon: 'fa-pizza-slice',    label: 'Western' },
+  5: { color: '#2865bb', icon: 'fa-mug-hot',        label: 'Cafe' },
+  6: { color: '#bc210f', icon: 'fa-burger',         label: 'Fast Food' },
+  7: { color: '#3b1c79', icon: 'fa-store',          label: 'Convenience Store' },
 });
 
 const createPin = (style) => {
