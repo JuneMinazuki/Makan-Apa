@@ -170,6 +170,58 @@
   font-size: 1rem;
 }
 
+/* --- Status Popup --- */
+.status-popup-container {
+  position: fixed;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 9999;
+  pointer-events: none;
+  width: auto;
+  align-items: center;
+}
+
+.status-popup {
+  pointer-events: auto;
+  padding: 10px 24px;
+  border-radius: 50px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+  animation: slideInDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.status-popup.loading {
+  background: #3e6787;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.status-popup.error {
+  background: #e74c3c;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* --- Animation --- */
+@keyframes slideInUp {
+  from {
+    transform: translateY(100px) scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
 /* --- Mobile Screen --- */
 @media (max-width: 768px) {
   .navbar {
@@ -199,9 +251,14 @@
     padding: 2px 12px 2px 12px;
   }
 
-  .status-tags {
-    order: 2;
-    margin-left: auto;
+  .status-popup-container {
+    top: 140px;
+    width: 90%;
+  }
+  
+  .status-popup {
+    font-size: 0.85rem;
+    padding: 8px 16px;
   }
 }
 
@@ -215,4 +272,3 @@
     height: 32px;
   }
 }
-

@@ -3,22 +3,32 @@ import './Navbar.css';
 
 function Navbar({ loading, error, onSearch, activeTypes, setActiveTypes }) {
   return (
-    <nav className="navbar">
-      <div className="nav-logo">
-        <i className="fas fa-utensils"></i> Makan Apa?
-      </div>
+    <>
+      <nav className="navbar">
+        <div className="nav-logo">
+          <i className="fas fa-utensils"></i> Makan Apa?
+        </div>
 
-      <SearchBar 
-        onSearch={onSearch} 
-        activeTypes={activeTypes} 
-        setActiveTypes={setActiveTypes} 
-      />
+        <SearchBar 
+          onSearch={onSearch} 
+          activeTypes={activeTypes} 
+          setActiveTypes={setActiveTypes} 
+        />
+      </nav>
 
-      <div className="status-tags">
-        {loading && <div className="loading-tag">Locating...</div>}
-        {error && <div className="error-tag" title={error}>Error</div>}
+      <div className="status-popup-container">
+        {loading && (
+          <div className="status-popup loading">
+            <i className="fas fa-spinner fa-spin"></i> Locating...
+          </div>
+        )}
+        {error && (
+          <div className="status-popup error" title={error}>
+            <i className="fas fa-exclamation-circle"></i> Error: {error}
+          </div>
+        )}
       </div>
-    </nav>
+    </>
   );
 }
 
