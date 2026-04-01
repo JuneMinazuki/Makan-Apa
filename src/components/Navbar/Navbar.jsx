@@ -1,4 +1,5 @@
 import SearchBar from './Searchbar.jsx';
+import StatusPopup from '../StatusPopup/StatusPopup.jsx';
 import './Navbar.css';
 
 function Navbar({ loading, error, onSearch, activeTypes, setActiveTypes }) {
@@ -16,18 +17,7 @@ function Navbar({ loading, error, onSearch, activeTypes, setActiveTypes }) {
         />
       </nav>
 
-      <div className="status-popup-container">
-        {loading && (
-          <div className="status-popup loading">
-            <i className="fas fa-spinner fa-spin"></i> Locating...
-          </div>
-        )}
-        {error && (
-          <div className="status-popup error" title={error}>
-            <i className="fas fa-exclamation-circle"></i> Error: {error}
-          </div>
-        )}
-      </div>
+      <StatusPopup loading={loading} error={error} />
     </>
   );
 }
