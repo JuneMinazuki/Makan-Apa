@@ -19,6 +19,15 @@
   color: #ffffff;
   text-decoration: none;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+}
+
+.nav-logo i {
+  font-size: 2rem;
+  margin-right: 15px;
+  color: #ffffff; 
 }
 
 /* --- Search Bar --- */
@@ -161,6 +170,18 @@
   font-size: 1rem;
 }
 
+/* --- Animation --- */
+@keyframes slideInUp {
+  from {
+    transform: translateY(100px) scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
 /* --- Mobile Screen --- */
 @media (max-width: 768px) {
   .navbar {
@@ -189,11 +210,6 @@
     max-width: 100%;
     padding: 2px 12px 2px 12px;
   }
-
-  .status-tags {
-    order: 2;
-    margin-left: auto;
-  }
 }
 
 @media (max-width: 480px) {
@@ -206,4 +222,3 @@
     height: 32px;
   }
 }
-
