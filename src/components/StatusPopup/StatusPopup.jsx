@@ -1,9 +1,10 @@
+import ReactDOM from 'react-dom';
 import './StatusPopup.css';
 
 const StatusPopup = ({ loading, error }) => {
   if (!loading && !error) return null;
 
-  return (
+  return ReactDOM.createPortal(
     <div className="status-popup-container">
       {loading && (
         <div className="status-popup loading">
@@ -16,7 +17,8 @@ const StatusPopup = ({ loading, error }) => {
           <i className="fas fa-exclamation-circle"></i> Error: {error}
         </div>
       )}
-    </div>
+    </div>,
+    document.body
   );
 };
 
