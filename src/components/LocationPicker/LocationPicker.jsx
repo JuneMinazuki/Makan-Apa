@@ -19,24 +19,54 @@ function ClickHandler({ setPosition }) {
 
 function LocationPicker() {
   const defaultPos = [3.0327, 101.6188];
+  
+  // Existing States
   const [position, setPosition] = useState(null);
   const [activeTypes, setActiveTypes] = useState(Object.keys(iconInfomation));
 
-  const handleLocateMe = () => {
-    if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser");
-      return;
-    }
+  // New Form States
+  const [id, setId] = useState(Math.floor(1000 + Math.random() * 9000));
+  const [name, setName] = useState('');
+  const [type, setType] = useState(1);
+  const [schedule, setSchedule] = useState([["1100", "2230"], ["1100", "2230"], ["1100", "2230"], ["1100", "2230"], ["1100", "2230"], ["1100", "2230"], ["1100", "2230"]]);
 
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        setPosition({ lat: latitude, lng: longitude });
-      },
-      () => {
-        alert("Unable to retrieve your location. Please check permissions.");
-      }
-    );
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  const handleScheduleChange = (dayIndex, timeIndex, value) => {
+    const newSchedule = [...schedule];
+    newSchedule[dayIndex][timeIndex] = value;
+    setSchedule(newSchedule);
+  };
+
+  const toggleDayClosed = (dayIndex) => {
+    const newSchedule = [...schedule];
+    newSchedule[dayIndex] = newSchedule[dayIndex].length === 0 ? ["1100", "2230"] : [];
+    setSchedule(newSchedule);
+  };
+
+  const generateOutput = () => {
+    if (!position) return '';
+
+    const lat = position.lat.toFixed(4);
+    const lng = position.lng.toFixed(4);
+    
+    const scheduleFormatted = schedule
+      .map(day => (day.length === 0 ? '[]' : `[${day[0]}, ${day[1]}]`))
+      .join(', ');
+
+    return `  {
+    id: ${id},
+    name: "${name || "New Location"}",
+    type: ${Number(type)},
+    lat: ${lat},
+    lng: ${lng},
+    schedule: [${scheduleFormatted}]
+  },`;
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(generateOutput());
+    alert("Copied to clipboard!");
   };
 
   return (
@@ -53,41 +83,91 @@ function LocationPicker() {
           <Link to="/" className="back-btn">← Back Home</Link>
         
           <div className="coords-card">
-            <h3>Select Location</h3>
-  
-            <button className="locate-btn" onClick={handleLocateMe}>
-              Find My Current Location
-            </button>
+            <h3>Add New Location</h3>
+            
+            <div className="scrollable-form">
+              <div className="input-group">
+                <label>ID</label>
+                <input 
+                  type="number" 
+                  placeholder="e.g. 1001" 
+                  value={id} 
+                  onChange={(e) => setId(e.target.value)} 
+                />
+              </div>
 
-            <div className="coords-display">
-              {position ? (
-                <>
-                  <span className="label">Latitude</span>
-                  <code>{position.lat.toFixed(6)}</code>
-                  <hr style={{ margin: '8px 0', opacity: 0.1 }} />
-                  <span className="label">Longitude</span>
-                  <code>{position.lng.toFixed(6)}</code>
-                </>
+              <div className="input-group">
+                <label>Location Name</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. Family Mart" 
+                  value={name} 
+                  onChange={(e) => setName(e.target.value)} 
+                />
+              </div>
+
+              <div className="input-group">
+                <label>Type ID</label>
+                <select value={type} onChange={(e) => setType(e.target.value)}>
+                  <option value={1}>1 - Cafe</option>
+                  <option value={2}>2 - Restaurant</option>
+                  <option value={3}>3 - Izakaya/Bar</option>
+                </select>
+              </div>
+
+              <div className="coords-display">
+                 <span className="label">Coordinates</span>
+                {position ? (
+                  <code>{position.lat.toFixed(4)}, {position.lng.toFixed(4)}</code>
                 ) : (
-                  <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
-                    Click anywhere on the map to drop a pin.
-                  </p>
+                  <p className="hint">Click map to set location</p>
                 )}
+              </div>
+
+              <div className="schedule-section">
+                <label>Schedule (HHMM)</label>
+                {days.map((day, index) => (
+                  <div key={day} className="day-row">
+                    <span className="day-label">{day}</span>
+                    {schedule[index].length > 0 ? (
+                      <>
+                        <input 
+                          type="text" 
+                          maxLength="4"
+                          value={schedule[index][0]} 
+                          onChange={(e) => handleScheduleChange(index, 0, e.target.value)} 
+                        />
+                        <span>-</span>
+                        <input 
+                          type="text" 
+                          maxLength="4"
+                          value={schedule[index][1]} 
+                          onChange={(e) => handleScheduleChange(index, 1, e.target.value)} 
+                        />
+                      </>
+                    ) : (
+                      <span className="closed-text">Closed</span>
+                    )}
+                    <button className="toggle-day" onClick={() => toggleDayClosed(index)}>
+                      {schedule[index].length > 0 ? "×" : "+"}
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
-  
+
             {position && (
-              <button className="confirm-btn">Confirm Selection</button>
+              <button className="confirm-btn" onClick={copyToClipboard}>
+                Copy Object to Clipboard
+              </button>
             )}
           </div>
         </div>
 
         <MapContainer center={defaultPos} zoom={13} className="full-map">
           <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
-          
           <ClickHandler setPosition={setPosition} />
-          
           <FlyToLocation targetLocation={position} />
-
           {position && <Marker position={position} />}
         </MapContainer>
       </div>
