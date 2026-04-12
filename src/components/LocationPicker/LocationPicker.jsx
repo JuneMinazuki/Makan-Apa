@@ -45,6 +45,7 @@ function LocationPicker() {
         activeTypes={activeTypes} 
         setActiveTypes={setActiveTypes}
         onSearch={(loc) => setPosition(loc)} 
+        showSearch={false}
       />
 
       <div className="picker-container">
