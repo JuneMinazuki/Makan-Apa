@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import './LocationPicker.css';
 
@@ -27,7 +26,7 @@ function LocationPicker() {
   // New Form States
   const [id, setId] = useState(Math.floor(1000 + Math.random() * 9000));
   const [name, setName] = useState('');
-  const [type, setType] = useState(1);
+  const [type, setType] = useState(Object.keys(iconInfomation)[0]);
   const [schedule, setSchedule] = useState([["1100", "2230"], ["1100", "2230"], ["1100", "2230"], ["1100", "2230"], ["1100", "2230"], ["1100", "2230"], ["1100", "2230"]]);
 
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -79,9 +78,7 @@ function LocationPicker() {
       />
 
       <div className="picker-container">
-        <div className="picker-ui">
-          <Link to="/" className="back-btn">← Back Home</Link>
-        
+        <div className="picker-ui">        
           <div className="coords-card">
             <h3>Add New Location</h3>
             
@@ -109,9 +106,11 @@ function LocationPicker() {
               <div className="input-group">
                 <label>Type ID</label>
                 <select value={type} onChange={(e) => setType(e.target.value)}>
-                  <option value={1}>1 - Cafe</option>
-                  <option value={2}>2 - Restaurant</option>
-                  <option value={3}>3 - Izakaya/Bar</option>
+                  {Object.entries(iconInfomation).map(([id, info]) => (
+                    <option key={id} value={id}>
+                      {id} - {info.label}
+                    </option>
+                  ))}
                 </select>
               </div>
 

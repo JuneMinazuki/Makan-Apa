@@ -35,29 +35,6 @@
   max-width: 320px;
 }
 
-/* --- Navigation Button --- */
-.back-btn {
-  pointer-events: auto;
-  background: #1e293b;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 12px;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 0.9rem;
-  width: fit-content;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.back-btn:hover {
-  background: #0f172a;
-  transform: translateX(-4px);
-}
-
 /* --- The Main Control Card --- */
 .coords-card {
   pointer-events: auto;
@@ -297,14 +274,5 @@ code {
 
 /* --- Custom Leaflet Adjustments --- */
 .leaflet-control-zoom {
-  border: none !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
-  margin-right: 24px !important;
-  margin-bottom: 24px !important;
-}
-
-.leaflet-control-zoom-in, .leaflet-control-zoom-out {
-  border-radius: 8px !important;
-  margin-bottom: 2px;
-  border: none !important;
+  display: none !important;
 }
