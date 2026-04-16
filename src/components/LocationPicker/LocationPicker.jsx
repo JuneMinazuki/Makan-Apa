@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import './LocationPicker.css';
@@ -6,6 +6,7 @@ import './LocationPicker.css';
 import Navbar from '../Navbar/Navbar.jsx';
 import FlyToLocation from '../Map/FlyToLocation';
 import { iconInfomation } from '../Map/mapIcons.js';
+import StatusPopup from '../StatusPopup/StatusPopup.jsx';
 
 function ClickHandler({ setPosition }) {
   useMapEvents({
@@ -28,6 +29,16 @@ function LocationPicker() {
   const [name, setName] = useState('');
   const [type, setType] = useState(Object.keys(iconInfomation)[0]);
   const [schedule, setSchedule] = useState([["1100", "2230"], ["1100", "2230"], ["1100", "2230"], ["1100", "2230"], ["1100", "2230"], ["1100", "2230"], ["1100", "2230"]]);
+
+  // Status state
+  const [status, setStatus] = useState({ loading: false, error: null, success: null });
+
+  const triggerStatus = (type, message) => {
+    setStatus({ loading: false, error: null, success: null, [type]: message });
+    setTimeout(() => {
+      setStatus(prev => ({ ...prev, [type]: null }));
+    }, 3000);
+  };
 
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -65,17 +76,18 @@ function LocationPicker() {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(generateOutput());
-    alert("Copied to clipboard!");
+    triggerStatus('success', 'Copied to clipboard!');
   };
 
   function LocateButton({ setPosition }) {
     const map = useMapEvents({
       locationfound(e) {
+        setStatus(prev => ({ ...prev, loading: false }));
         setPosition(e.latlng);
         map.flyTo(e.latlng, 16);
       },
       locationerror() {
-        alert("Location access denied or unavailable.");
+        triggerStatus('error', 'Location access denied or unavailable.');
       }
     });
 
@@ -84,6 +96,7 @@ function LocationPicker() {
       className="locate-me-fab" 
       onClick={(e) => {
         e.preventDefault();
+        setStatus(prev => ({ ...prev, loading: true }));
         map.locate();
       }}
       title="Get Current Location"
@@ -99,6 +112,8 @@ function LocationPicker() {
 
   return (
     <div className="location-picker-page">
+      <StatusPopup {...status} />
+      
       <Navbar 
         activeTypes={activeTypes} 
         setActiveTypes={setActiveTypes}
