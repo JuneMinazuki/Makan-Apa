@@ -68,6 +68,35 @@ function LocationPicker() {
     alert("Copied to clipboard!");
   };
 
+  function LocateButton({ setPosition }) {
+    const map = useMapEvents({
+      locationfound(e) {
+        setPosition(e.latlng);
+        map.flyTo(e.latlng, 16);
+      },
+      locationerror() {
+        alert("Location access denied or unavailable.");
+      }
+    });
+
+  return (
+    <button 
+      className="locate-me-fab" 
+      onClick={(e) => {
+        e.preventDefault();
+        map.locate();
+      }}
+      title="Get Current Location"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/>
+        <line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/>
+        <line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/>
+      </svg>
+    </button>
+  );
+}
+
   return (
     <div className="location-picker-page">
       <Navbar 
@@ -168,6 +197,7 @@ function LocationPicker() {
           <ClickHandler setPosition={setPosition} />
           <FlyToLocation targetLocation={position} />
           {position && <Marker position={position} />}
+          <LocateButton setPosition={setPosition} />
         </MapContainer>
       </div>
     </div>
