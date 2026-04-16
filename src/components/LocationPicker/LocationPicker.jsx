@@ -61,7 +61,12 @@ function LocationPicker() {
     const lng = position.lng.toFixed(4);
     
     const scheduleFormatted = schedule
-      .map(day => (day.length === 0 ? '[]' : `[${day[0]}, ${day[1]}]`))
+      .map(day => {
+        if (day.length === 0) return '[]';
+        const open = Number(day[0]);
+        const close = Number(day[1]);
+        return `[${open}, ${close}]`;
+      })
       .join(', ');
 
     return `  {
