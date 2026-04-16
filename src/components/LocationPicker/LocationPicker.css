@@ -310,7 +310,3 @@ code {
 .leaflet-control-zoom {
   display: none !important;
 }
-
-.leaflet-bottom.leaflet-right {
-  margin-bottom: 80px;
-}
