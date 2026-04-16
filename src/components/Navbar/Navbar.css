@@ -170,6 +170,29 @@
   font-size: 1rem;
 }
 
+/* --- Navigation Button --- */
+.back-btn {
+  pointer-events: auto;
+  background: #1e293b;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  width: fit-content;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.back-btn:hover {
+  background: #0f172a;
+  transform: translateX(-4px);
+}
+
 /* --- Animation --- */
 @keyframes slideInUp {
   from {
