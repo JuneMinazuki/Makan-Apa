@@ -3,7 +3,7 @@ import { getIsLocationOpen } from '../Utils/dateUtils.js';
 import StatusPopup from '../StatusPopup/StatusPopup.jsx';
 import './Sidebar.css';
 
-function RandomizerSidebar({ nearbyPins, onSelect }) {
+function RandomizerSidebar({ filteredPins, onSelect }) {
   const [error, setError] = useState(null);
 
   // Automatically close popup after a few seconds
@@ -15,7 +15,7 @@ function RandomizerSidebar({ nearbyPins, onSelect }) {
   }, [error]);
 
   const handleRandomize = () => {
-    const openPins = nearbyPins?.filter(pin => getIsLocationOpen(pin.schedule)) || [];
+    const openPins = filteredPins?.filter(pin => getIsLocationOpen(pin.schedule)) || [];
 
     if (openPins.length > 0) {
       setError(null);

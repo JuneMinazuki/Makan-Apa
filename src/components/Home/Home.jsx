@@ -22,13 +22,10 @@ function Home() {
   const [activeTypes, setActiveTypes] = useState(Object.keys(iconInfomation));
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Get nearby and filter location pin
-  const nearbyPins = useMemo(() => {
-    if (!userLocation) return [];
-    const pins = getNearbyLocations(mapLocations, userLocation, 10);
-
-    return pins.filter(pin => activeTypes.includes(String(pin.type)));
-  }, [userLocation, activeTypes]);
+  // Get filtered location pin
+  const filteredPins = useMemo(() => {
+    return mapLocations.filter(pin => activeTypes.includes(String(pin.type)));
+  }, [activeTypes]);
 
   // Fly to selected location after searching
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -60,7 +57,7 @@ function Home() {
         <div className="map-area">
           <LocationMap 
             userLocation={userLocation} 
-            nearbyPins={nearbyPins} 
+            filteredPins={filteredPins} 
             defaultPosition={position} 
             selectedLocation={selectedLocation}
           />
@@ -73,7 +70,7 @@ function Home() {
           />
 
           <RandomizerSidebar 
-            nearbyPins={nearbyPins} 
+            filteredPins={filteredPins} 
             onSelect={(loc) => {
               setSelectedLocation(loc);
               setIsSidebarOpen(false);

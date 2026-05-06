@@ -8,7 +8,7 @@ import { getIsLocationOpen, getTodaySchedule } from '../Utils/dateUtils.js';
 import FlyToLocation from './FlyToLocation.js';
 import { memoizedIcons, iconInfomation } from '../Map/mapIcons.js';
 
-function LocationMap({ userLocation, nearbyPins, defaultPosition, selectedLocation }) {
+function LocationMap({ userLocation, filteredPins, defaultPosition, selectedLocation }) {
   const markerRefs = useRef({});
 
   useEffect(() => {
@@ -78,7 +78,7 @@ function LocationMap({ userLocation, nearbyPins, defaultPosition, selectedLocati
         iconCreateFunction={createCustomClusterIcon}
         maxClusterRadius={50}
       >
-        {nearbyPins.map((location) => {
+        {filteredPins.map((location) => {
           const iconData = memoizedIcons[location.type] || memoizedIcons[2];
           const isOpen = getIsLocationOpen(location.schedule);
 
