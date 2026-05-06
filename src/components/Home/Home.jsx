@@ -5,7 +5,6 @@ import './Home.css';
 
 // Hooks and Utils
 import { useUserLocation } from '../Hooks/useUserLocation';
-import { getNearbyLocations } from '../Utils/geoUtils.js';
 
 // Navigation Bar
 import Navbar from '../Navbar/Navbar.jsx';
@@ -71,6 +70,8 @@ function Home() {
 
           <RandomizerSidebar 
             filteredPins={filteredPins} 
+            userLocation={userLocation}
+            loading={loading}
             onSelect={(loc) => {
               setSelectedLocation(loc);
               setIsSidebarOpen(false);
