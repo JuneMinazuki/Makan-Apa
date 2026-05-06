@@ -11,12 +11,6 @@ import { memoizedIcons, iconInfomation } from '../Map/mapIcons.js';
 function LocationMap({ userLocation, filteredPins, defaultPosition, selectedLocation }) {
   const markerRefs = useRef({});
 
-  useEffect(() => {
-    if (selectedLocation && markerRefs.current[selectedLocation.id]) {
-      markerRefs.current[selectedLocation.id].openPopup();
-    }
-  }, [selectedLocation]);
-
   const createCustomClusterIcon = (cluster) => {
     const markers = cluster.getAllChildMarkers();
     const typeCounts = {};
@@ -46,6 +40,17 @@ function LocationMap({ userLocation, filteredPins, defaultPosition, selectedLoca
     });
   };
 
+  const openSelectedPopup = () => {
+    if (selectedLocation && markerRefs.current[selectedLocation.id]) {
+      setTimeout(() => {
+        const marker = markerRefs.current[selectedLocation.id];
+        if (marker) {
+          marker.openPopup();
+        }
+      }, 100);
+    }
+  };
+
   return (
     <MapContainer 
       center={defaultPosition} 
@@ -59,7 +64,10 @@ function LocationMap({ userLocation, filteredPins, defaultPosition, selectedLoca
       />
 
       <FlyToLocation targetLocation={userLocation} /> {/* Fly to user location */}
-      <FlyToLocation targetLocation={selectedLocation} /> {/* Fly to selected store */}
+      <FlyToLocation
+        targetLocation={selectedLocation} 
+        onComplete={openSelectedPopup} 
+      /> {/* Fly to selected store */}
 
       {/* User Current Location Marker */}
       {userLocation && (
@@ -77,6 +85,8 @@ function LocationMap({ userLocation, filteredPins, defaultPosition, selectedLoca
         chunkedLoading 
         iconCreateFunction={createCustomClusterIcon}
         maxClusterRadius={50}
+        spiderfyOnMaxZoom={true}
+        removeOutsideVisibleBounds={true}
       >
         {filteredPins.map((location) => {
           const iconData = memoizedIcons[location.type] || memoizedIcons[2];
@@ -89,11 +99,8 @@ function LocationMap({ userLocation, filteredPins, defaultPosition, selectedLoca
               icon={iconData.icon}
               type={location.type}
               ref={(ref) => {
-                if (ref) {
-                  markerRefs.current[location.id] = ref;
-                } else {
-                  delete markerRefs.current[location.id];
-                }
+                if (ref) markerRefs.current[location.id] = ref;
+                else delete markerRefs.current[location.id];
               }}
             >
               <Popup>
