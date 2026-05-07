@@ -85,7 +85,7 @@ function LocationMap({ userLocation, filteredPins, defaultPosition, selectedLoca
         chunkedLoading 
         iconCreateFunction={createCustomClusterIcon}
         maxClusterRadius={50}
-        disableClusteringAtZoom={17} 
+        disableClusteringAtZoom={16} 
         spiderfyOnMaxZoom={true}
         removeOutsideVisibleBounds={true}
       >
