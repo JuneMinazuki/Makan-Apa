@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { getIsLocationOpen } from '../Utils/dateUtils.js';
+import { getNearbyLocations } from '../Utils/geoUtils.js';
 import StatusPopup from '../StatusPopup/StatusPopup.jsx';
 import './Sidebar.css';
 
-function RandomizerSidebar({ nearbyPins, onSelect }) {
+function RandomizerSidebar({ filteredPins, userLocation, loading, onSelect }) {
   const [error, setError] = useState(null);
 
   // Automatically close popup after a few seconds
@@ -14,14 +15,19 @@ function RandomizerSidebar({ nearbyPins, onSelect }) {
     }
   }, [error]);
 
-  const handleRandomize = () => {
-    const openPins = nearbyPins?.filter(pin => getIsLocationOpen(pin.schedule)) || [];
+  // Disable randomizer if still loading or location unavailable
+  const isDisabled = loading || !userLocation;
 
-    if (openPins.length > 0) {
+  const handleRandomize = () => {
+    if (isDisabled) return;
+
+    const nearbyPins = getNearbyLocations(filteredPins, userLocation, 5);
+    const availablePins = nearbyPins?.filter(pin => getIsLocationOpen(pin.schedule)) || [];
+
+    if (availablePins.length > 0) {
       setError(null);
-      const randomIndex = Math.floor(Math.random() * openPins.length);
-      const randomPin = openPins[randomIndex];
-      onSelect(randomPin);
+      const randomIndex = Math.floor(Math.random() * availablePins.length);
+      onSelect(availablePins[randomIndex]);
     } else {
       setError("No locations are currently open! Try again later.");
     }

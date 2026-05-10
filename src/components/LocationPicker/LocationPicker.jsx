@@ -11,7 +11,9 @@ import StatusPopup from '../StatusPopup/StatusPopup.jsx';
 function ClickHandler({ setPosition }) {
   useMapEvents({
     click(e) {
-      setPosition(e.latlng);
+      if (e.originalEvent.target.classList.contains('leaflet-container')) {
+        setPosition(e.latlng);
+      }
     },
   });
   return null;
@@ -101,6 +103,7 @@ function LocationPicker() {
       className="locate-me-fab" 
       onClick={(e) => {
         e.preventDefault();
+        e.stopPropagation();
         setStatus(prev => ({ ...prev, loading: true }));
         map.locate();
       }}
