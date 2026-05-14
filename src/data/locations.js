@@ -1,4 +1,4 @@
-  export const mapLocations = [
+export const mapLocations = [
   {
     id: 1,
     name: "古早味 The Unique Taste",

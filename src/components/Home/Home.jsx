@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
 import { mapLocations } from '../../data/locations.js';
 import './Home.css';
@@ -20,6 +20,23 @@ function Home() {
   const { userLocation, error, loading } = useUserLocation();
   const [activeTypes, setActiveTypes] = useState(Object.keys(iconInfomation));
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Store past randomly picked location
+  const [history, setHistory] = useState(() => {
+    const savedHistory = localStorage.getItem('randomHistory');
+    return savedHistory ? JSON.parse(savedHistory) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('randomHistory', JSON.stringify(history));
+  }, [history]);
+
+  const addToHistory = (location) => {
+    setHistory((prev) => {
+      const filtered = prev.filter(item => item.id !== location.id); // Avoid duplicates
+      return [location, ...filtered].slice(0, 10); // Keep last 10 entries
+    });
+  };
 
   // Get filtered location pin
   const filteredPins = useMemo(() => {
