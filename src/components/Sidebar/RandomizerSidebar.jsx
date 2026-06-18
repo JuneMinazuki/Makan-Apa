@@ -37,7 +37,7 @@ function RandomizerSidebar({ filteredPins, userLocation, loading, onSelect }) {
     <div className="randomizer-container">
       <StatusPopup error={error} loading={false} />
 
-      <button className="random-button" onClick={handleRandomize}>
+      <button className="random-button" onClick={handleRandomize} disabled={isDisabled}>
         <i className="fa-solid fa-shuffle" style={{ marginRight: '8px' }}></i>
         Surprise Me!
       </button>

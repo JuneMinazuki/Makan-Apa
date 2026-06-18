@@ -57,12 +57,20 @@
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
 }
 
-.random-button:hover {
+.random-button:hover:not(:disabled) {
   transform: translateY(-2px);
   background-color: #26af5f;
+}
+
+.random-button:disabled {
+  background-color: #a3d9b7;
+  color: #ffffff;
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .random-hint {
