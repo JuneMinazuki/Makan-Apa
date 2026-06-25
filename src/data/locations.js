@@ -144,6 +144,22 @@ export const mapLocations = [
     schedule: [[730, 2000], [730, 2000], [730, 2000], [730, 2000], [730, 2000], [730, 2000], [730, 2000]]
   },
   {
+    id: 19,
+    name: "Niko Niko Onigiri Puchong",
+    type: 3,
+    lat: 3.0137,
+    lng: 101.6151,
+    schedule: [[900, 2030], [900, 2030], [], [900, 2030], [900, 2030], [900, 2030], [900, 2030]]
+  },
+  {
+    id: 20,
+    name: "Niko Niko Onigiri Sri Petaling",
+    type: 3,
+    lat: 3.0688,
+    lng: 101.6915,
+    schedule: [[830, 2100], [830, 2100], [830, 2100], [830, 2100], [830, 2100], [830, 2100], [830, 2100]]
+  },
+  {
     id: 1001,
     name: "Restoran Nasi Kandar Pokok Penang (Cyberjaya)",
     type: 1,
