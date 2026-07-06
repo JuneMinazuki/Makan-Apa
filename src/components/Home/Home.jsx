@@ -3,6 +3,9 @@ import 'leaflet/dist/leaflet.css';
 import { mapLocations } from '../../data/locations.js';
 import './Home.css';
 
+// Neon Database Instance
+import { neon } from '../Utils/neon.js';
+
 // Hooks and Utils
 import { useUserLocation } from '../Hooks/useUserLocation';
 
@@ -16,7 +19,7 @@ import RandomizerSidebar from '../Sidebar/RandomizerSidebar.jsx';
 import { iconInfomation } from '../Map/mapIcons.js';
 
 function Home() {
-  const position = [3.0327, 101.6188]; // Coordinates for the Puchong
+  const position = [3.0327, 101.6188]; // Coordinates for Puchong
   const { userLocation, error, loading } = useUserLocation();
   const [activeTypes, setActiveTypes] = useState(Object.keys(iconInfomation));
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
