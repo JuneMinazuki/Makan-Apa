@@ -1,7 +1,7 @@
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './components/Home/Home';
 import LocationPicker from './components/LocationPicker/LocationPicker';
-import './App.css'
+import './App.css';
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
         </Routes>
       </div>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;
