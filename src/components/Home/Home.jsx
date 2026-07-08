@@ -1,6 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
-import { mapLocations } from '../../data/locations.js';
 import './Home.css';
 
 // Neon Database Instance
@@ -20,9 +19,32 @@ import { iconInfomation } from '../Map/mapIcons.js';
 
 function Home() {
   const position = [3.0327, 101.6188]; // Coordinates for Puchong
-  const { userLocation, error, loading } = useUserLocation();
+  const { userLocation, error: locationError, loading: locationLoading } = useUserLocation();
   const [activeTypes, setActiveTypes] = useState(Object.keys(iconInfomation));
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [mapLocations, setMapLocations] = useState([]);
+  const [dbLoading, setDbLoading] = useState(true);
+  const [dbError, setDbError] = useState(null);
+
+  // Fetch data from Neon Database
+    useEffect(() => {
+    async function fetchLocations() {
+      try {
+        setDbLoading(true);
+        
+        const data = await neon`SELECT id, name, type, lat, lng, schedule FROM map_locations`;
+        
+        setMapLocations(data || []);
+      } catch (err) {
+        console.error("Failed to fetch locations from Neon:", err);
+        setDbError(err.message);
+      } finally {
+        setDbLoading(false);
+      }
+    }
+
+    fetchLocations();
+  }, []);
 
   // Store past randomly picked location
   const [history, setHistory] = useState(() => {
@@ -44,7 +66,7 @@ function Home() {
   // Get filtered location pin
   const filteredPins = useMemo(() => {
     return mapLocations.filter(pin => activeTypes.includes(String(pin.type)));
-  }, [activeTypes]);
+  }, [activeTypes, mapLocations]);
 
   // Fly to selected location after searching
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -53,11 +75,19 @@ function Home() {
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
+  if (dbLoading) {
+    return <div className="loading-screen">Loading locations...</div>;
+  }
+
+  if (dbError) {
+    return <div className="error-screen">Error loading map: {dbError}</div>;
+  }
+
   return (
     <div className="home-container">
       <Navbar
-        loading={loading}
-        error={error}
+        loading={locationLoading}
+        error={locationError}
         onSearch={handleSearch}
         activeTypes={activeTypes}
         setActiveTypes={setActiveTypes}
@@ -91,7 +121,7 @@ function Home() {
           <RandomizerSidebar 
             filteredPins={filteredPins} 
             userLocation={userLocation}
-            loading={loading}
+            loading={locationLoading}
             onSelect={(loc) => {
               setSelectedLocation(loc);
               setIsSidebarOpen(false);
