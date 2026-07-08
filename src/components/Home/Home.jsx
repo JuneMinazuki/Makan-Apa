@@ -3,7 +3,7 @@ import 'leaflet/dist/leaflet.css';
 import './Home.css';
 
 // Neon Database Instance
-import { neon } from '../Utils/neon.js';
+import { neon } from '@neondatabase/serverless';
 
 // Hooks and Utils
 import { useUserLocation } from '../Hooks/useUserLocation';
@@ -27,16 +27,18 @@ function Home() {
   const [dbError, setDbError] = useState(null);
 
   // Fetch data from Neon Database
-    useEffect(() => {
+  useEffect(() => {
     async function fetchLocations() {
       try {
         setDbLoading(true);
         
-        const data = await neon`SELECT id, name, type, lat, lng, schedule FROM map_locations`;
+        const response = await fetch('/api/locations');
+        if (!response.ok) throw new Error('Failed to fetch data');
         
+        const data = await response.json();
         setMapLocations(data || []);
       } catch (err) {
-        console.error("Failed to fetch locations from Neon:", err);
+        console.error("Failed to fetch locations:", err);
         setDbError(err.message);
       } finally {
         setDbLoading(false);
