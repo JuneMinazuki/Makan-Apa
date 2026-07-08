@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS map_locations (
     type SMALLINT NOT NULL,
     lat REAL NOT NULL,
     lng REAL NOT NULL,
-    schedule INT4RANGE[] NOT NULL
+    schedule INT[][] NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_map_locations_coords 

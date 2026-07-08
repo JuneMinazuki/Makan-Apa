@@ -9,7 +9,7 @@ export const getIsLocationOpen = (schedule) => {
   const currentTime = now.getHours() * 100 + now.getMinutes();
   const todayData = schedule[currentDay];
 
-  if (!todayData || todayData.length === 0) return false;
+  if (!todayData || todayData.length === 0 || todayData[0] === -1) return false;
 
   const [openTime, closeTime] = todayData;
   if (openTime < closeTime) {
@@ -23,7 +23,7 @@ export const getIsLocationOpen = (schedule) => {
  * Convert time from integer to string.
  */
 export const formatIntToTime = (timeInt) => {
-  if (timeInt === undefined || timeInt === null) return "Closed";
+  if (timeInt === undefined || timeInt === null || timeInt === -1) return "Closed";
   
   const hours = Math.floor(timeInt / 100) % 24;
   const mins = timeInt % 100;
@@ -42,7 +42,7 @@ export const getTodaySchedule = (schedule) => {
   const day = new Date().getDay();
   const today = schedule?.[day];
 
-  if (!today || today.length === 0) return "Closed Today";
+  if (!today || today.length === 0 || today[0] === -1) return "Closed Today";
 
   return `${formatIntToTime(today[0])} - ${formatIntToTime(today[1])}`;
 };
