@@ -93,6 +93,7 @@ function Home() {
         onSearch={handleSearch}
         activeTypes={activeTypes}
         setActiveTypes={setActiveTypes}
+        mapLocations={mapLocations}
       />
 
       {/* Mobile Sidebar Toggle */}

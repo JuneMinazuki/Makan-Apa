@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { mapLocations } from '../../data/locations.js';
 import { iconInfomation } from '../Map/mapIcons.js';
 
-function SearchBar({ onSearch, activeTypes, setActiveTypes }) {
+function SearchBar({ onSearch, activeTypes, setActiveTypes, mapLocations = [] }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredResults, setFilteredResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
