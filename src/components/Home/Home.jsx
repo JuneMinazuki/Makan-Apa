@@ -8,13 +8,12 @@ import { neon } from '@neondatabase/serverless';
 // Hooks and Utils
 import { useUserLocation } from '../Hooks/useUserLocation';
 
-// Navigation Bar
+// Components
 import Navbar from '../Navbar/Navbar.jsx';
-
-// Map Components
 import LocationMap from '../Map/LocationMap.jsx';
 import FilterSidebar from '../Sidebar/FilterSidebar.jsx';
 import RandomizerSidebar from '../Sidebar/RandomizerSidebar.jsx';
+import StatusPopup from '../StatusPopup/StatusPopup.jsx';
 import { iconInfomation } from '../Map/mapIcons.js';
 
 function Home() {
@@ -33,7 +32,7 @@ function Home() {
         setDbLoading(true);
         
         const response = await fetch('/api/locations');
-        if (!response.ok) throw new Error('Failed to fetch data');
+        if (!response.ok) throw new Error('Failed to fetch map locations');
         
         const data = await response.json();
         setMapLocations(data || []);
@@ -77,16 +76,16 @@ function Home() {
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
-  if (dbLoading) {
-    return <div className="loading-screen">Loading locations...</div>;
-  }
-
-  if (dbError) {
-    return <div className="error-screen">Error loading map: {dbError}</div>;
-  }
+  const anyLoading = locationLoading || dbLoading;
+  const anyError = locationError || dbError;
 
   return (
     <div className="home-container">
+      <StatusPopup 
+        loading={anyLoading} 
+        error={anyError} 
+      />
+
       <Navbar
         loading={locationLoading}
         error={locationError}
