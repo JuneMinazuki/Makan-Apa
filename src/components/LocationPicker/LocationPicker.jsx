@@ -64,21 +64,17 @@ function LocationPicker() {
     
     const scheduleFormatted = schedule
       .map(day => {
-        if (day.length === 0) return '[]';
+        if (day.length === 0) return '[-1,-1]';
+        
         const open = Number(day[0]);
         const close = Number(day[1]);
-        return `[${open}, ${close}]`;
+        return `[${open},${close}]`;
       })
-      .join(', ');
+      .join(',');
 
-    return `  {
-    id: ${id},
-    name: "${name || "New Location"}",
-    type: ${Number(type)},
-    lat: ${lat},
-    lng: ${lng},
-    schedule: [${scheduleFormatted}]
-  },`;
+    const sanitizedName = (name || "New Location").replace(/'/g, "''");
+
+    return `INSERT INTO map_locations (id, name, type, lat, lng, schedule) VALUES\n(${id}, '${sanitizedName}', ${Number(type)}, ${lat}, ${lng}, ARRAY[${scheduleFormatted}]);`;
   };
 
   const copyToClipboard = () => {
@@ -209,7 +205,7 @@ function LocationPicker() {
 
             {position && (
               <button className="confirm-btn" onClick={copyToClipboard}>
-                Copy Object to Clipboard
+                Copy to Clipboard
               </button>
             )}
           </div>
