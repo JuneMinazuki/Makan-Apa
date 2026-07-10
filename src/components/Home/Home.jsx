@@ -87,8 +87,6 @@ function Home() {
       />
 
       <Navbar
-        loading={locationLoading}
-        error={locationError}
         onSearch={handleSearch}
         activeTypes={activeTypes}
         setActiveTypes={setActiveTypes}

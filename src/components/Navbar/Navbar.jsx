@@ -3,7 +3,7 @@ import SearchBar from './Searchbar.jsx';
 import StatusPopup from '../StatusPopup/StatusPopup.jsx';
 import './Navbar.css';
 
-function Navbar({ loading, error, onSearch, activeTypes, setActiveTypes, mapLocations, showSearch = true }) {
+function Navbar({ onSearch, activeTypes, setActiveTypes, mapLocations, showSearch = true }) {
   return (
     <>
       <nav className="navbar">
@@ -22,8 +22,6 @@ function Navbar({ loading, error, onSearch, activeTypes, setActiveTypes, mapLoca
           <Link to="/" className="back-btn">← Back Home</Link>
         )}
       </nav>
-
-      <StatusPopup loading={loading} error={error} />
     </>
   );
 }
