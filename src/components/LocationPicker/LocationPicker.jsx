@@ -5,7 +5,7 @@ import './LocationPicker.css';
 
 import Navbar from '../Navbar/Navbar.jsx';
 import FlyToLocation from '../Map/FlyToLocation';
-import { iconInfomation } from '../Map/mapIcons.js';
+import { iconInfomation, memoizedIcons } from '../Map/mapIcons.js';
 import StatusPopup from '../StatusPopup/StatusPopup.jsx';
 
 function ClickHandler({ setPosition }) {
@@ -215,7 +215,12 @@ function LocationPicker() {
           <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
           <ClickHandler setPosition={setPosition} />
           <FlyToLocation targetLocation={position} />
-          {position && <Marker position={position} />}
+          {position && (
+            <Marker 
+              position={position} 
+              icon={memoizedIcons[type]?.icon} 
+            />
+          )}
           <LocateButton setPosition={setPosition} />
         </MapContainer>
       </div>
