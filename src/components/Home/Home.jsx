@@ -72,6 +72,24 @@ function Home() {
   // Fly to selected location after searching
   const [selectedLocation, setSelectedLocation] = useState(null);
 
+  useEffect(() => {
+    if (mapLocations.length > 0) {
+      const params = new URLSearchParams(window.location.search);
+      const selectedId = params.get('selectedId');
+
+      if (selectedId) {
+        const matchedLocation = mapLocations.find(loc => String(loc.id) === String(selectedId));
+        
+        if (matchedLocation) {
+          setSelectedLocation(matchedLocation);
+          
+          const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+          window.history.replaceState({ path: newUrl }, '', newUrl);
+        }
+      }
+    }
+  }, [mapLocations]);
+
   const handleSearch = (location) => setSelectedLocation(location);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);

@@ -2,10 +2,12 @@ import { useEffect } from 'react';
 import { useMap } from 'react-leaflet';
 import { calculateDistance } from '../Utils/geoUtils';
 
-const FlyToLocation = ({ targetLocation, onComplete }) => {
+const FlyToLocation = ({ targetLocation, onComplete, isUserLocation = false, hasSelection = false }) => {
   const map = useMap();
 
   useEffect(() => {
+    if (isUserLocation && hasSelection) return;
+
     if (targetLocation) {
       const coords = Array.isArray(targetLocation) 
         ? targetLocation 
@@ -44,7 +46,7 @@ const FlyToLocation = ({ targetLocation, onComplete }) => {
 
       return () => map.off('moveend', handleMoveEnd);
     }
-  }, [targetLocation, map, onComplete]);
+  }, [targetLocation, map, onComplete, isUserLocation, hasSelection]);
 
   return null;
 };
