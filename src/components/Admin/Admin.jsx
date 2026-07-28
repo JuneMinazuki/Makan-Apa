@@ -50,13 +50,17 @@ function Admin() {
     
     try {
       setLoading(true);
-      const response = await fetch(`/api/locations/${id}`, { 
+      const response = await fetch(`/api/delete-location?id=${id}`, { 
         method: 'DELETE',
         headers: {
           'Authorization': passwordInput
         }
       });
-      if (!response.ok) throw new Error('Failed to delete the location');
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete the location');
+      }
       
       setMapLocations(prev => prev.filter(loc => loc.id !== id));
     } catch (err) {
