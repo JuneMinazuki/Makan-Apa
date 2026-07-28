@@ -74,7 +74,7 @@ function LocationPicker() {
 
     const sanitizedName = (name || "New Location").replace(/'/g, "''");
 
-    return `INSERT INTO map_locations (id, name, type, lat, lng, schedule) VALUES\n(${id}, '${sanitizedName}', ${Number(type)}, ${lat}, ${lng}, ARRAY[${scheduleFormatted}]);`;
+    return `INSERT INTO map_locations (id, name, type, lat, lng, schedule, is_approved) VALUES\n(${id}, '${sanitizedName}', ${Number(type)}, ${lat}, ${lng}, ARRAY[${scheduleFormatted}], FALSE);`;
   };
 
   const copyToClipboard = () => {
