@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import './Home.css';
 
@@ -128,6 +129,10 @@ function Home() {
             defaultPosition={position} 
             selectedLocation={selectedLocation}
           />
+
+          <Link to="/add" className="map-add-btn" title="Add Location" aria-label="Add Location">
+            <i className="fas fa-plus"></i>
+          </Link>
         </div>
 
         <div className={`sidebar-wrapper ${isSidebarOpen ? 'active' : ''}`}>
