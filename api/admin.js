@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     const databaseUrl = process.env.NEON_DATABASE_URL; 
     const sql = neon(databaseUrl);
     
-    const data = await sql`SELECT id, name, type, lat, lng, schedule, is_approved FROM map_locations`;
+    const data = await sql`SELECT id, name, type, lat, lng, schedule, is_approved FROM map_locations ORDER BY id ASC`;
     
     return res.status(200).json(data);
   } catch (err) {
