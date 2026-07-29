@@ -307,6 +307,71 @@ code {
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
+/* --- Schedule Section --- */
+.schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.schedule-header label {
+  margin-bottom: 0 !important;
+}
+
+.apply-all-btn {
+  background: transparent;
+  border: none;
+  color: #2563eb;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.apply-all-btn:hover {
+  background: rgba(37, 99, 235, 0.1);
+}
+
+.day-row input[type="time"] {
+  width: 78px;
+  padding: 4px 6px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  text-align: center;
+  background: #ffffff;
+  color: #1e293b;
+  cursor: pointer;
+}
+
+.day-row input[type="time"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  opacity: 0.6;
+}
+
+.quick-24h-btn {
+  background: #e2e8f0;
+  border: none;
+  color: #475569;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 4px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quick-24h-btn:hover {
+  background: #cbd5e1;
+  color: #0f172a;
+}
+
 /* --- Animations --- */
 @keyframes fadeIn {
   from { opacity: 0; }
