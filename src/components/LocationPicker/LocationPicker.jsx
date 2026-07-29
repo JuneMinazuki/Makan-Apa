@@ -105,7 +105,7 @@ function LocationPicker() {
 
   const set24Hours = (dayIndex) => {
     const newSchedule = [...schedule];
-    newSchedule[dayIndex] = ["0000", "2359"];
+    newSchedule[dayIndex] = ["0000", "2400"];
     setSchedule(newSchedule);
   };
 
