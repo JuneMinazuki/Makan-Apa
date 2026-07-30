@@ -11,6 +11,9 @@ import { memoizedIcons, iconInfomation } from '../Map/mapIcons.js';
 function LocationMap({ userLocation, filteredPins, defaultPosition, selectedLocation }) {
   const markerRefs = useRef({});
 
+  const params = new URLSearchParams(window.location.search);
+  const loadingSelectedPin = params.has('selectedId');
+
   const createCustomClusterIcon = (cluster) => {
     const markers = cluster.getAllChildMarkers();
     const typeCounts = {};
@@ -63,11 +66,24 @@ function LocationMap({ userLocation, filteredPins, defaultPosition, selectedLoca
         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
       />
 
-      <FlyToLocation targetLocation={userLocation} /> {/* Fly to user location */}
-      <FlyToLocation
-        targetLocation={selectedLocation} 
-        onComplete={openSelectedPopup} 
-      /> {/* Fly to selected store */}
+      {/* Fly to user location */}
+      {userLocation && !loadingSelectedPin && !selectedLocation && (
+        <FlyToLocation 
+          targetLocation={userLocation} 
+          isUserLocation={true}
+          hasSelection={false} 
+        />
+      )}
+
+      {/* Fly to selected store */}
+      {selectedLocation && (
+        <FlyToLocation
+          targetLocation={selectedLocation} 
+          onComplete={openSelectedPopup}
+          isUserLocation={false}
+          hasSelection={true}
+        />
+      )}
 
       {/* User Current Location Marker */}
       {userLocation && (

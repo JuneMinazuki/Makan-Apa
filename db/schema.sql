@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS map_locations (
     type SMALLINT NOT NULL,
     lat REAL NOT NULL,
     lng REAL NOT NULL,
-    schedule INT[][] NOT NULL
+    schedule INT[][] NOT NULL,
+    is_approved BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE INDEX IF NOT EXISTS idx_map_locations_coords 
@@ -12,3 +13,6 @@ CREATE INDEX IF NOT EXISTS idx_map_locations_coords
 
 CREATE INDEX IF NOT EXISTS idx_map_locations_type 
     ON map_locations (type);
+
+CREATE INDEX IF NOT EXISTS idx_map_locations_is_approved 
+    ON map_locations (is_approved);

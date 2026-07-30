@@ -46,3 +46,20 @@ export const getTodaySchedule = (schedule) => {
 
   return `${formatIntToTime(today[0])} - ${formatIntToTime(today[1])}`;
 };
+
+/**
+ * Convert integer time format ("1100" or 1100) to standard string "11:00" for HTML time inputs.
+ */
+export const intToTimeString = (val) => {
+  if (val === undefined || val === null || val === -1) return "00:00";
+  const str = String(val).padStart(4, "0");
+  return `${str.slice(0, 2)}:${str.slice(2, 4)}`;
+};
+
+/**
+ * Convert HTML standard time string "11:00" to format "1100" for backend compatibility.
+ */
+export const timeStringToInt = (val) => {
+  if (!val) return "0000";
+  return val.replace(":", "");
+};

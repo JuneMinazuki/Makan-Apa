@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import './Home.css';
 
@@ -72,6 +73,24 @@ function Home() {
   // Fly to selected location after searching
   const [selectedLocation, setSelectedLocation] = useState(null);
 
+  useEffect(() => {
+    if (mapLocations.length > 0) {
+      const params = new URLSearchParams(window.location.search);
+      const selectedId = params.get('selectedId');
+
+      if (selectedId) {
+        const matchedLocation = mapLocations.find(loc => String(loc.id) === String(selectedId));
+        
+        if (matchedLocation) {
+          setSelectedLocation(matchedLocation);
+          
+          const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+          window.history.replaceState({ path: newUrl }, '', newUrl);
+        }
+      }
+    }
+  }, [mapLocations]);
+
   const handleSearch = (location) => setSelectedLocation(location);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
@@ -87,8 +106,6 @@ function Home() {
       />
 
       <Navbar
-        loading={locationLoading}
-        error={locationError}
         onSearch={handleSearch}
         activeTypes={activeTypes}
         setActiveTypes={setActiveTypes}
@@ -112,6 +129,10 @@ function Home() {
             defaultPosition={position} 
             selectedLocation={selectedLocation}
           />
+
+          <Link to="/add" className="map-add-btn" title="Add Location" aria-label="Add Location">
+            <i className="fas fa-plus"></i>
+          </Link>
         </div>
 
         <div className={`sidebar-wrapper ${isSidebarOpen ? 'active' : ''}`}>
