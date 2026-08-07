@@ -53,14 +53,28 @@ function LocationPicker() {
   useEffect(() => {
     if (!editId) return;
 
+    const adminPassword = sessionStorage.getItem('admin_password');
+    if (!adminPassword) {
+      alert('Unauthorized: You must be logged in as an admin to edit pins.');
+      navigate('/add', { replace: true });
+      return;
+    }
+
     async function fetchPinData() {
       try {
         setStatus(prev => ({ ...prev, loading: true }));
-        const adminPassword = sessionStorage.getItem('admin_password');
         
         const response = await fetch(`/api/admin`, {
-          headers: adminPassword ? { 'Authorization': adminPassword } : {}
+          headers: { 'Authorization': adminPassword }
         });
+
+        // Handle invalid credentials or session expiration
+        if (response.status === 401) {
+          sessionStorage.removeItem('admin_password');
+          alert('Admin session expired. Please log in again.');
+          navigate('/admin');
+          return;
+        }
 
         if (!response.ok) throw new Error('Failed to fetch pin details');
         const data = await response.json();
@@ -86,13 +100,14 @@ function LocationPicker() {
         }
       } catch (err) {
         triggerStatus('error', err.message);
+        navigate('/add', { replace: true });
       } finally {
         setStatus(prev => ({ ...prev, loading: false }));
       }
     }
 
     fetchPinData();
-  }, [editId]);
+  }, [editId, navigate]);
 
   const handleScheduleChange = (dayIndex, timeIndex, value) => {
     const newSchedule = [...schedule];
@@ -108,6 +123,14 @@ function LocationPicker() {
 
   const handleSubmit = async () => {
     if (!position) return;
+
+    const adminPassword = sessionStorage.getItem('admin_password');
+    const isEdit = Boolean(editId);
+
+    if (isEdit && !adminPassword) {
+      triggerStatus('error', 'Unauthorized. Only admins can edit pins.');
+      return;
+    }
 
     setStatus(prev => ({ ...prev, loading: true }));
 
