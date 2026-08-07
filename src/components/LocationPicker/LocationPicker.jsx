@@ -149,10 +149,8 @@ function LocationPicker() {
       schedule: scheduleFormatted
     };
 
-    const isEdit = Boolean(editId);
     const endpoint = isEdit ? '/api/edit-location' : '/api/add-location';
     const method = isEdit ? 'PUT' : 'POST';
-    const adminPassword = sessionStorage.getItem('admin_password');
 
     try {
       const response = await fetch(endpoint, {
