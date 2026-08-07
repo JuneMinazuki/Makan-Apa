@@ -78,7 +78,7 @@
   border-radius: 10px;
 }
 
-/* --- Buttons --- */
+/* --- Buttons & Action Groups --- */
 .locate-btn {
   width: 100%;
   padding: 12px;
@@ -102,6 +102,12 @@
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
+.edit-actions-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
 .confirm-btn {
   width: 100%;
   margin-top: 16px;
@@ -117,9 +123,29 @@
   animation: slideUp 0.3s ease-out;
 }
 
+.confirm-btn.no-margin {
+  margin-top: 0;
+}
+
 .confirm-btn:hover {
   background: #059669;
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.cancel-btn {
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: #f1f5f9;
+  color: #475569;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
 }
 
 /* --- Coordinates Display Area --- */
@@ -177,82 +203,6 @@ code {
   outline: none;
   border-color: #2563eb;
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-}
-
-/* --- Schedule Section --- */
-.schedule-section {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #f1f5f9;
-}
-
-.schedule-section > label {
-  display: block;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #64748b;
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
-
-.day-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-  background: #f8fafc;
-  padding: 6px 10px;
-  border-radius: 10px;
-}
-
-.day-label {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #475569;
-  width: 35px;
-}
-
-.day-row input {
-  width: 55px;
-  padding: 4px 6px;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  font-family: monospace;
-  font-size: 0.85rem;
-  text-align: center;
-}
-
-.day-row span {
-  font-size: 0.8rem;
-  color: #94a3b8;
-}
-
-.closed-text {
-  flex-grow: 1;
-  font-size: 0.8rem;
-  color: #94a3b8;
-  font-style: italic;
-  text-align: center;
-}
-
-.toggle-day {
-  background: #f1f5f9;
-  border: none;
-  color: #64748b;
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  transition: all 0.2s;
-}
-
-.toggle-day:hover {
-  background: #e2e8f0;
-  color: #0f172a;
 }
 
 .hint {

@@ -43,6 +43,7 @@ function Admin() {
   const handleLogin = (e) => {
     e.preventDefault();
     if (passwordInput.trim() !== "") {
+      sessionStorage.setItem('admin_password', passwordInput);
       setIsAuthenticated(true);
     }
   };
@@ -193,6 +194,9 @@ function Admin() {
                                   ✓ Approve
                                 </button>
                               )}
+                              <Link to={`/add?editId=${loc.id}`} className="action-btn edit-btn">
+                                ✏ Edit
+                              </Link>
                               <Link to={`/?selectedId=${loc.id}`} className="action-btn view-btn">
                                 View On Map
                               </Link>
