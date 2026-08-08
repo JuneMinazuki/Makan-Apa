@@ -17,6 +17,10 @@ function Admin() {
   // Tab state: 'pending' or 'approved'
   const [activeTab, setActiveTab] = useState('pending');
 
+  // Search and Category Filter states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedType, setSelectedType] = useState('ALL');
+
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -43,6 +47,7 @@ function Admin() {
   const handleLogin = (e) => {
     e.preventDefault();
     if (passwordInput.trim() !== "") {
+      sessionStorage.setItem('admin_password', passwordInput);
       setIsAuthenticated(true);
     }
   };
@@ -97,9 +102,19 @@ function Admin() {
     }
   };
 
-  const filteredLocations = mapLocations.filter(loc => 
-    activeTab === 'pending' ? !loc.is_approved : loc.is_approved
-  );
+  // Filter locations by status tab, search query, and category type
+  const filteredLocations = mapLocations.filter(loc => {
+    const matchesTab = activeTab === 'pending' ? !loc.is_approved : loc.is_approved;
+    
+    const query = searchQuery.trim().toLowerCase();
+    const matchesSearch = query === '' || 
+      loc.id.toString().toLowerCase().includes(query) ||
+      loc.name.toLowerCase().includes(query);
+
+    const matchesType = selectedType === 'ALL' || loc.type.toString() === selectedType;
+
+    return matchesTab && matchesSearch && matchesType;
+  });
 
   return (
     <div className="admin-container">
@@ -137,20 +152,58 @@ function Admin() {
             <div className="table-header-row">
               <h2>Location Database Directory</h2>
               
-              {/* Filter Tabs */}
-              <div className="admin-tabs">
-                <button 
-                  className={`tab-btn ${activeTab === 'pending' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('pending')}
-                >
-                  Pending ({mapLocations.filter(l => !l.is_approved).length})
-                </button>
-                <button 
-                  className={`tab-btn ${activeTab === 'approved' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('approved')}
-                >
-                  Approved ({mapLocations.filter(l => l.is_approved).length})
-                </button>
+              <div className="admin-header-controls">
+                <div className="admin-filter-bar">
+                  <div className="admin-search-wrapper">
+                    <i className="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input 
+                      type="text"
+                      placeholder="Search ID or name..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="admin-search-input"
+                    />
+                    {searchQuery && (
+                      <button 
+                        className="clear-search-btn" 
+                        onClick={() => setSearchQuery('')}
+                        title="Clear search"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="filter-divider"></div>
+
+                  <select 
+                    className="admin-type-select" 
+                    value={selectedType} 
+                    onChange={(e) => setSelectedType(e.target.value)}
+                  >
+                    <option value="ALL">All Categories</option>
+                    {Object.entries(iconInfomation).map(([key, info]) => (
+                      <option key={key} value={key}>
+                        {info.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="admin-tabs">
+                  <button 
+                    className={`tab-btn ${activeTab === 'pending' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('pending')}
+                  >
+                    Pending ({mapLocations.filter(l => !l.is_approved).length})
+                  </button>
+                  <button 
+                    className={`tab-btn ${activeTab === 'approved' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('approved')}
+                  >
+                    Approved ({mapLocations.filter(l => l.is_approved).length})
+                  </button>
+                </div>
               </div>
             </div>
             
@@ -169,7 +222,7 @@ function Admin() {
                   {filteredLocations.length === 0 ? (
                     <tr>
                       <td colSpan="5" style={{ textAlign: 'center', padding: '24px' }}>
-                        No {activeTab} locations found.
+                        No {activeTab} locations matching current filters.
                       </td>
                     </tr>
                   ) : (
@@ -193,6 +246,9 @@ function Admin() {
                                   ✓ Approve
                                 </button>
                               )}
+                              <Link to={`/add?editId=${loc.id}`} className="action-btn edit-btn">
+                                ✏ Edit
+                              </Link>
                               <Link to={`/?selectedId=${loc.id}`} className="action-btn view-btn">
                                 View On Map
                               </Link>

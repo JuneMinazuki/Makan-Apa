@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import './LocationPicker.css';
 
@@ -23,11 +24,15 @@ function ClickHandler({ setPosition }) {
 function LocationPicker() {
   const defaultPos = [3.0327, 101.6188];
   
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const editId = searchParams.get('editId');
+
   // Existing States
   const [position, setPosition] = useState(null);
   const [activeTypes, setActiveTypes] = useState(Object.keys(iconInfomation));
 
-  // New Form States
+  // Form States
   const [id, setId] = useState(Math.floor(1000 + Math.random() * 9000));
   const [name, setName] = useState('');
   const [type, setType] = useState(Object.keys(iconInfomation)[0]);
@@ -36,14 +41,73 @@ function LocationPicker() {
   // Status state
   const [status, setStatus] = useState({ loading: false, error: null, success: null });
 
-  const triggerStatus = (type, message) => {
-    setStatus({ loading: false, error: null, success: null, [type]: message });
+  const triggerStatus = (typeStr, message) => {
+    setStatus({ loading: false, error: null, success: null, [typeStr]: message });
     setTimeout(() => {
-      setStatus(prev => ({ ...prev, [type]: null }));
+      setStatus(prev => ({ ...prev, [typeStr]: null }));
     }, 3000);
   };
 
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  // Fetch location details if editing
+  useEffect(() => {
+    if (!editId) return;
+
+    const adminPassword = sessionStorage.getItem('admin_password');
+    if (!adminPassword) {
+      alert('Unauthorized: You must be logged in as an admin to edit pins.');
+      navigate('/add', { replace: true });
+      return;
+    }
+
+    async function fetchPinData() {
+      try {
+        setStatus(prev => ({ ...prev, loading: true }));
+        
+        const response = await fetch(`/api/admin`, {
+          headers: { 'Authorization': adminPassword }
+        });
+
+        // Handle invalid credentials or session expiration
+        if (response.status === 401) {
+          sessionStorage.removeItem('admin_password');
+          alert('Admin session expired. Please log in again.');
+          navigate('/admin');
+          return;
+        }
+
+        if (!response.ok) throw new Error('Failed to fetch pin details');
+        const data = await response.json();
+        
+        const target = data.find(item => item.id === Number(editId));
+        if (!target) throw new Error('Pin location not found');
+
+        setId(target.id);
+        setName(target.name);
+        setType(target.type.toString());
+        setPosition({ lat: target.lat, lng: target.lng });
+
+        // Convert schedule numbers back to time string array
+        if (target.schedule) {
+          const parsedSchedule = target.schedule.map(day => {
+            if (day[0] === -1) return [];
+            return [
+              day[0].toString().padStart(4, '0'),
+              day[1].toString().padStart(4, '0')
+            ];
+          });
+          setSchedule(parsedSchedule);
+        }
+      } catch (err) {
+        triggerStatus('error', err.message);
+        navigate('/add', { replace: true });
+      } finally {
+        setStatus(prev => ({ ...prev, loading: false }));
+      }
+    }
+
+    fetchPinData();
+  }, [editId, navigate]);
 
   const handleScheduleChange = (dayIndex, timeIndex, value) => {
     const newSchedule = [...schedule];
@@ -60,6 +124,14 @@ function LocationPicker() {
   const handleSubmit = async () => {
     if (!position) return;
 
+    const adminPassword = sessionStorage.getItem('admin_password');
+    const isEdit = Boolean(editId);
+
+    if (isEdit && !adminPassword) {
+      triggerStatus('error', 'Unauthorized. Only admins can edit pins.');
+      return;
+    }
+
     setStatus(prev => ({ ...prev, loading: true }));
 
     // Convert UI schedule state to numbers format required by backend
@@ -70,29 +142,39 @@ function LocationPicker() {
 
     const payload = {
       id: Number(id),
-      name: name || "New Location",
+      name: name || "Location",
       type: Number(type),
       lat: Number(position.lat.toFixed(4)),
       lng: Number(position.lng.toFixed(4)),
       schedule: scheduleFormatted
     };
 
+    const endpoint = isEdit ? '/api/edit-location' : '/api/add-location';
+    const method = isEdit ? 'PUT' : 'POST';
+
     try {
-      const response = await fetch('/api/add-location', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch(endpoint, {
+        method,
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(isEdit && adminPassword ? { 'Authorization': adminPassword } : {})
+        },
         body: JSON.stringify(payload)
       });
 
       const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Operation failed');
 
-      if (!response.ok) throw new Error(result.error || 'Failed to submit location');
+      if (isEdit) {
+        alert('Pin updated successfully!');
+        navigate('/admin');
+      } else {
+        triggerStatus('success', 'Submitted successfully! Pending admin approval.');
 
-      triggerStatus('success', 'Submitted successfully! Pending admin approval.');
-      
-      // Reset form identifier for next entry
-      setId(Math.floor(1000 + Math.random() * 9000));
-      setName('');
+        // Reset form identifier for next entry
+        setId(Math.floor(1000 + Math.random() * 9000));
+        setName('');
+      }
     } catch (err) {
       triggerStatus('error', err.message);
     }
@@ -155,7 +237,7 @@ function LocationPicker() {
       <div className="picker-container">
         <div className="picker-ui">        
           <div className="coords-card">
-            <h3>Add New Location</h3>
+            <h3>{editId ? `Edit Pin (ID: ${editId})` : 'Add New Location'}</h3>
             
             <div className="scrollable-form">
               <div className="input-group">
@@ -164,6 +246,7 @@ function LocationPicker() {
                   type="number" 
                   placeholder="e.g. 1001" 
                   value={id} 
+                  disabled={Boolean(editId)} 
                   onChange={(e) => setId(e.target.value)} 
                 />
               </div>
@@ -181,9 +264,9 @@ function LocationPicker() {
               <div className="input-group">
                 <label>Type ID</label>
                 <select value={type} onChange={(e) => setType(e.target.value)}>
-                  {Object.entries(iconInfomation).map(([id, info]) => (
-                    <option key={id} value={id}>
-                      {id} - {info.label}
+                  {Object.entries(iconInfomation).map(([typeId, info]) => (
+                    <option key={typeId} value={typeId}>
+                      {typeId} - {info.label}
                     </option>
                   ))}
                 </select>
@@ -242,15 +325,23 @@ function LocationPicker() {
               </div>
             </div>
 
-            {position && (
-              <button className="confirm-btn" onClick={handleSubmit} disabled={status.loading}>
-                {status.loading ? 'Submitting...' : 'Submit Location'}
+            <div className="edit-actions-group">
+              <button className="confirm-btn no-margin" onClick={handleSubmit} disabled={status.loading}>
+                {status.loading ? 'Saving...' : editId ? 'Save Changes' : 'Submit Location'}
               </button>
-            )}
+              {editId && (
+                <button 
+                  className="cancel-btn" 
+                  onClick={() => navigate('/admin')}
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
-        <MapContainer center={defaultPos} zoom={13} className="full-map">
+        <MapContainer center={position ? [position.lat, position.lng] : defaultPos} zoom={14} className="full-map">
           <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
           <ClickHandler setPosition={setPosition} />
           <FlyToLocation targetLocation={position} />
