@@ -22,6 +22,8 @@ function ClickHandler({ setPosition }) {
 }
 
 function LocationPicker() {
+  const cartoApiKey = import.meta.env.VITE_CARTO_API_KEY;
+  
   const defaultPos = [3.0327, 101.6188];
   
   const [searchParams] = useSearchParams();
@@ -342,7 +344,7 @@ function LocationPicker() {
         </div>
 
         <MapContainer center={position ? [position.lat, position.lng] : defaultPos} zoom={14} className="full-map">
-          <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
+          <TileLayer url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${cartoApiKey}`}/>
           <ClickHandler setPosition={setPosition} />
           <FlyToLocation targetLocation={position} />
           {position && (
