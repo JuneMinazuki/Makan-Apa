@@ -9,6 +9,8 @@ import FlyToLocation from './FlyToLocation.js';
 import { memoizedIcons, iconInfomation } from '../Map/mapIcons.js';
 
 function LocationMap({ userLocation, filteredPins, defaultPosition, selectedLocation }) {
+  const cartoApiKey = import.meta.env.VITE_CARTO_API_KEY;
+  
   const markerRefs = useRef({});
 
   const params = new URLSearchParams(window.location.search);
@@ -63,7 +65,7 @@ function LocationMap({ userLocation, filteredPins, defaultPosition, selectedLoca
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+        url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${cartoApiKey}`}
       />
 
       {/* Fly to user location */}
